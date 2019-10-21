@@ -4,6 +4,8 @@
   },
   "post": {
     "title": ["QW-ACT-R1"],
-    "html": ["QW-ACT-R2", "QW-ACT-R3", "QW-ACT-R5"]
+    "html": ["QW-ACT-R2", "QW-ACT-R3", "QW-ACT-R5"],
+    "audio,video": ["QW-ACT-R15"]
+
   }
 }
