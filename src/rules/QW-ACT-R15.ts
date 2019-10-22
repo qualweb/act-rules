@@ -73,12 +73,12 @@ class QW_ACT_R15 extends Rule {
 
       if (childSrc.length > 0) {
         for (let child of childSrc) {
-          console.log(child)
+          //console.log(child)
           src.push(DomUtil.getElementAttribute(child, "src"));
         }
       } else { src.push(srcATT) }
 
-      if (autoplay !== "true" || paused === "true" || muted === "true" || (!srcATT && childSrc.length === 0 )|| duration < 3) {
+      if (autoplay !== "true" || paused === "true" || muted === "true" || (!srcATT && childSrc.length === 0) || duration < 3) {
         evaluation.verdict = 'inapplicable';
         evaluation.description = 'The element doesnt auto-play audio for 3 seconds';
         evaluation.resultCode = 'RC1';
@@ -86,7 +86,7 @@ class QW_ACT_R15 extends Rule {
         evaluation.verdict = 'passed';
         evaluation.description = 'The auto-play element has a visible control mechanism';
         evaluation.resultCode = 'RC2';
-      }else if (this.srcTimeIsLessThanThree(src)) {
+      } else if (this.srcTimeIsLessThanThree(src)) {
         evaluation.verdict = 'passed';
         evaluation.description = 'The auto-play element plays for 3 seconds or less';
         evaluation.resultCode = 'RC3';
@@ -112,16 +112,20 @@ class QW_ACT_R15 extends Rule {
 
   private srcTimeIsLessThanThree(src: any[]): boolean {
     let result = false;
-    let values, value1, value2;
+    let values, separatedValues, value1, value2;
     for (let child of src) {
       console.log(child);
       if (child !== undefined) {
-        values = String(child).split("#t=");
-        value1 = Number(values[1]);
-        value2 = Number(values[2]);
-        console.log(values+ value1 + "/"+ value2);
-        if (value1 && value2)
-          result = Math.abs(value1 - value2) <= 3;
+        values = String(child).split("#t=")
+        if (values.length > 1) {
+          separatedValues = values[1].split(",");
+          value1 = Number(separatedValues[0]);
+          value2 = Number(separatedValues[1]);
+          console.log(separatedValues);
+          console.log(value1 + "/" + value2);
+          if (value1 && value2)
+            result = Math.abs(value1 - value2) <= 3;
+        }
       }
 
     }
