@@ -1,6 +1,6 @@
 'use strict';
 
-import { DomElement, DomUtils } from 'htmlparser2';
+import { DomElement } from 'htmlparser2';
 const stew = new (require('stew-select')).Stew();
 import { DomUtils as DomUtil } from '@qualweb/util';
 import _ from 'lodash';
@@ -73,22 +73,27 @@ class QW_ACT_R15 extends Rule {
 
       if (childSrc.length > 0) {
         for (let child of childSrc) {
-          src.push(DomUtil.elementHasAttribute(child, "src"));
+          console.log(child)
+          src.push(DomUtil.getElementAttribute(child, "src"));
         }
       } else { src.push(srcATT) }
 
-      if (autoplay !== "true" || paused === "true" || muted === "true" || !srcATT || childSrc.length > 0 || duration < 3) {
+      if (autoplay !== "true" || paused === "true" || muted === "true" || (!srcATT && childSrc.length === 0 )|| duration < 3) {
         evaluation.verdict = 'inapplicable';
         evaluation.description = 'The element doesnt auto-play audio for 3 seconds';
         evaluation.resultCode = 'RC1';
-      } else if (controls || srcTimeIsLessThanThree(src)) {
+      } else if (controls) {
         evaluation.verdict = 'passed';
         evaluation.description = 'The auto-play element has a visible control mechanism';
         evaluation.resultCode = 'RC2';
+      }else if (this.srcTimeIsLessThanThree(src)) {
+        evaluation.verdict = 'passed';
+        evaluation.description = 'The auto-play element plays for 3 seconds or less';
+        evaluation.resultCode = 'RC3';
       } else {
         evaluation.verdict = 'warning';
         evaluation.description = 'Check if auto-play has a visible control mechanism';
-        evaluation.resultCode = 'RC3';
+        evaluation.resultCode = 'RC4';
 
 
       }
@@ -105,21 +110,22 @@ class QW_ACT_R15 extends Rule {
 
   }
 
-  private srcTimeIsLessThanThree(src: any[]): number {
+  private srcTimeIsLessThanThree(src: any[]): boolean {
     let result = false;
     let values, value1, value2;
     for (let child of src) {
+      console.log(child);
       if (child !== undefined) {
-        values = child.split("#t=");
+        values = String(child).split("#t=");
         value1 = Number(values[1]);
         value2 = Number(values[2]);
+        console.log(values+ value1 + "/"+ value2);
         if (value1 && value2)
-          result = Math.abs(value1 - value2) < 3;
+          result = Math.abs(value1 - value2) <= 3;
       }
 
-      src.push(DomUtil.elementHasAttribute(child, "src"));
     }
-    return Math.abs(degrees); // just ignore the abs
+    return result;
   }
 
 
