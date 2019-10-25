@@ -63,7 +63,7 @@ class QW_ACT_R17 extends Rule {
           !element.attribs.role &&
           element.attribs.role !==''){
               evaluation.verdict = 'failed';
-              evaluation.description = `There <img> element has no attribs`;
+              evaluation.description = `The img element has no attribs`;
               evaluation.resultCode = 'RC2';
         }
 
@@ -82,7 +82,7 @@ class QW_ACT_R17 extends Rule {
                 evaluation.resultCode = 'RC3';
             }else if (element.attribs && element.attribs.role && element.attribs.role !=='img'){
               evaluation.verdict = 'inapplicable';
-              evaluation.description = `The element is not a img element.`;
+              evaluation.description = `The element is not an img element.`;
               evaluation.resultCode = 'RC4';
             }
           }
@@ -92,17 +92,17 @@ class QW_ACT_R17 extends Rule {
           let isDecorative: boolean = this.isDecorative(element);
           if(isDecorative){
             evaluation.verdict = 'passed';
-            evaluation.description = `There <img> element is decorative`;
+            evaluation.description = `The <img> element is decorative`;
             evaluation.resultCode = 'RC5';
           }else{
             const accessibleName = AccessibilityTreeUtils.getAccessibleName(element, processedHTML);
             if(accessibleName !== '' && accessibleName !== undefined){
               evaluation.verdict = 'passed';
-              evaluation.description = `There <img> element has accessible name`;
+              evaluation.description = `The <img> element has accessible name`;
               evaluation.resultCode = 'RC6';
             }else{
               evaluation.verdict = 'failed';
-              evaluation.description = `There <img> element has accessible name`;
+              evaluation.description = `The img element has no accessible name`;
               evaluation.resultCode = 'RC7';
             }
           }
