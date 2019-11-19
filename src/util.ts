@@ -111,16 +111,18 @@ async function getContentHash(url: string) {
     console.log(content);
     return md5(content.replace(/\s|\r/g,""));
 }*/
-async function getContentHash(url: string) {
+async function getContentHash(url) {
     const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto(url,{'waitUntil': 'networkidle2'});
-    let content = await page.evaluate(() => {
-        return document.documentElement.innerHTML;
-      });
-
+    let content="";
+    try{
+        const page = await browser.newPage();
+        await page.goto(url, { 'waitUntil': 'networkidle0'});
+        content = await page.evaluate(() => {
+            return document.documentElement.innerHTML;
+        });}catch (e) {
+    }
     await browser.close();
-    return md5(content.replace(/\s|\r/g,""));
+    return md5.default(content.replace(/\s|\r/g, ""));
 }
 
 export {

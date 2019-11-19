@@ -130,6 +130,10 @@ class QW_ACT_R7 extends Rule {
 
   private extractInfo(cssObject: any, parentType?: string): void {
     let declarations = cssObject['declarations'];
+    let selectors;
+    if(cssObject.selectors){
+      selectors = cssObject.selectors.toString();
+    }
 
     if (declarations) {
       for (const declaration of declarations || []) {
@@ -147,29 +151,29 @@ class QW_ACT_R7 extends Rule {
               let angle = this.calculateRotationDegree(matrix);
               this.checkRotation(angle);
             } else if (declaration['value'].includes('rotate')) {
-              if(this.rawMap.hasOwnProperty(cssObject.selectors.toString()) &&
-              this.rawMap[cssObject.selectors.toString()] === declaration['value']){
+              if(this.rawMap.hasOwnProperty(selectors) &&
+              this.rawMap[selectors] === declaration['value']){
                     this.fillEvaluation(
                       'passed',
                       'A page where CSS transform property has rotate transform function conditionally applied on the orientation media feature which matches the default CSS transform applied on the target element.',
                       'RC4'
                     );
-                    delete this.rawMap[cssObject.selectors.toString()];
+                    delete this.rawMap[selectors];
               } else {
-                this.mediaMap[cssObject.selectors.toString()] = declaration['value'];
+                this.mediaMap[selectors] = declaration['value'];
               }
             }
           } else {
-            if(this.mediaMap.hasOwnProperty(cssObject.selectors.toString()) &&
-            this.mediaMap[cssObject.selectors.toString()] === declaration['value']){
+            if(this.mediaMap.hasOwnProperty(selectors) &&
+            this.mediaMap[selectors] === declaration['value']){
                     this.fillEvaluation(
                       'passed',
                       'A page where CSS transform property has rotate transform function conditionally applied on the orientation media feature which matches the default CSS transform applied on the target element.',
                       'RC5'
                     );
-                delete this.mediaMap[cssObject.selectors.toString()];
+                delete this.mediaMap[selectors];
             } else {
-              this.rawMap[cssObject.selectors.toString()] = declaration['value'];
+              this.rawMap[selectors] = declaration['value'];
             }
           }
         }
