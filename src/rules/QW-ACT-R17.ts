@@ -96,21 +96,26 @@ class QW_ACT_R17 extends Rule {
             evaluation.resultCode = 'RC5';
           }else{
             const accessibleName = AccessibilityTreeUtils.getAccessibleName(element, processedHTML);
-            if(accessibleName !== '' && accessibleName !== undefined){
-              evaluation.verdict = 'passed';
-              evaluation.description = `The <img> element has accessible name`;
-              evaluation.resultCode = 'RC6';
-            }else{
+            
+            if(accessibleName === undefined){
               evaluation.verdict = 'failed';
               evaluation.description = `The img element has no accessible name`;
+              evaluation.resultCode = 'RC6';
+            }else if(!accessibleName.replace(/\s/g, '').length){//check if string has more than whitespaces
+              evaluation.verdict = 'failed';
+              evaluation.description = `The img element has an empty accessible name`;
               evaluation.resultCode = 'RC7';
+            }else{
+              evaluation.verdict = 'passed';
+              evaluation.description = `The <img> element has accessible name`;
+              evaluation.resultCode = 'RC8';
             }
           }
         }
       }else{
         evaluation.verdict = 'inapplicable';
         evaluation.description = `The element does not have the semantic role of img.`;
-        evaluation.resultCode = 'RC8';
+        evaluation.resultCode = 'RC9';
       }
     }
     super.addEvaluationResult(evaluation);
