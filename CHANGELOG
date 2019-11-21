@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.12] - 21/11/2019
+
+### Fixed
+ - getContentHash bug fixed
+
 ## [0.1.11] - 21/11/2019
 
 ### Fixed
