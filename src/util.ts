@@ -97,21 +97,8 @@ function transform_element_into_html(element: DomElement, withText: boolean = tr
 
     return html(codeElement);
 }
-/** 
+
 async function getContentHash(url: string) {
-
-    var options = {
-        url: url,
-        simple:false,
-        followRedirect: true
-
-    };
-  
-    let content = await request(url,options);
-    console.log(content);
-    return md5(content.replace(/\s|\r/g,""));
-}*/
-async function getContentHash(url) {
     const browser = await puppeteer.launch();
     let content="";
     try{
@@ -122,7 +109,7 @@ async function getContentHash(url) {
         });}catch (e) {
     }
     await browser.close();
-    return md5.default(content.replace(/\s|\r/g, ""));
+    return md5(content.replace(/\s|\r/g, ""));
 }
 
 export {
