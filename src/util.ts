@@ -5,6 +5,8 @@ import html from 'htmlparser-to-html';
 import clone from 'lodash/clone';
 import md5 from 'md5';
 const puppeteer = require('puppeteer');
+import { DomUtils as DomUtil, AccessibilityTreeUtils } from '@qualweb/util';
+import {trim} from 'lodash';
 
 
 function getSelfLocationInParent(element: DomElement): string {
@@ -47,7 +49,6 @@ function getElementSelector(element: DomElement): string {
         parents.unshift(getSelfLocationInParent(parent));
         parent = parent.parent;
     }
-
     selector += parents.join(' > ');
     selector += ' > ' + getSelfLocationInParent(element);
 
@@ -111,6 +112,107 @@ async function getContentHash(url: string) {
     await browser.close();
     return md5(content.replace(/\s|\r/g, ""));
 }
+
+
+
+function getAccessibleNameSVG(element: DomElement, processedHTML: DomElement[]): string | undefined {
+  return getAccessibleNameSVGRecursion(element, processedHTML, false);
+}
+//elementos q sao usados para outros: desc(descricao),title
+//link role if the element has a valid href or xlink:href attribute. For a elements that are not links, use the mapping for tspan if the a element is a descendent of text, or the mapping for g otherwise.
+function getAccessibleNameSVGRecursion(element: DomElement, processedHTML: DomElement[], recursion: boolean): string | undefined {
+  let AName, ariaLabelBy, ariaLabel,id,tag;
+  
+  tag = element.name;
+  let noAccessibleObjectOrChild = ["clipPath","cursor","defs","desc","metadata","pattern"]
+  let noAccessibleObject = ["animate","animateMotion","animateTransform","discard","filter","hatch","hatchPath","linearGradient","marker","mask","meshPatch","meshRow","mpath","radialGradient","script","set","solidColor","stop","style","switch","view","title"]//fazer is "fe*",
+  let specialElements = ["circle","elipse","line","path","polygon","polyline","rect","use","g","image","mesh","textPath","tspan","foreignObject"];//https://www.w3.org/TR/svg-aam-1.0/#include_elements
+  let elementsLikeHtml = ["canvas","iframe","source","track","video"];
+  if (element.attribs) {
+    ariaLabelBy = DomUtil.getElementById(element.attribs["aria-labelledby"], processedHTML).length > 0 ? element.attribs["aria-labelledby"] : "";
+    ariaLabel = element.attribs["aria-label"];
+    id = element.attribs["id"];
+  }
+  let referencedByAriaLabel = AccessibilityTreeUtils.isElementReferencedByAriaLabel(id, processedHTML, element);
+  let title =  DomUtil.getElementChildTextContent(element, "title");
+  let titleAtt = DomUtil.getElementAttribute(element, "xlink:title");//tem de ser a
+
+
+  if (AccessibilityTreeUtils.isElementHidden(element) && !recursion) {
+    //noAName
+  } else if (ariaLabelBy && ariaLabelBy !== "" && !(referencedByAriaLabel && recursion)) {
+    AName = getAccessibleNameFromAriaLabelledBy(element, ariaLabelBy, processedHTML);
+  } else if (ariaLabel && trim(ariaLabel) !== "") {
+    AName = ariaLabel;
+  } else if (title && trim(title) !== "") {
+    AName = title;
+  } else if (titleAtt && trim(titleAtt) !== "") {
+    AName = titleAtt;
+  } else if (tag && tag === "text" ) {
+    AName = AccessibilityTreeUtils.getTrimmedText(element);
+  } 
+
+  return AName;
+}
+
+/*function getFirstNotUndefined(...args: any[]): string | undefined {
+  let result;
+  let i = 0;
+  let arg;
+  let end = false;
+
+  while (i < args.length && !end) {
+    arg = args[i];
+    if (arg !== undefined) {
+      result = arg;
+      if (trim(String(arg)) !== "") {
+        end = true;
+      }
+    }
+    i++;
+  }
+
+  return result;
+}*/
+
+
+
+
+function getAccessibleNameFromAriaLabelledBy(element: DomElement, ariaLabelId: string, processedHTML: DomElement[]): string | undefined {
+  let ListIdRefs = ariaLabelId.split(" ");
+  let result: string | undefined;
+  let accessNameFromId: string | undefined;
+
+  for (let id of ListIdRefs) {
+    accessNameFromId = getAccessibleNameSVGRecursion(DomUtil.getElementById(id, processedHTML)[0], processedHTML, true);
+    if (accessNameFromId) {
+      if (result) {
+        result += accessNameFromId;
+      } else {
+        result = accessNameFromId;
+      }
+    }
+  }
+
+  return result;
+}
+
+/*function getAccessibleNameFromChildren(element: DomElement, processedHTML: DomElement[]): string {
+  let isWidget = isElementWidget(element);
+  let result, aName;
+
+  if (element.children) {
+    for (let child of element.children) {
+      aName = getAccessibleNameRecursion(child, processedHTML, true, isWidget);
+      if (aName) {
+        if (result) {
+          result += aName;
+        } else {
+          result = aName;
+        }
+      }
+    }
+  }}*/
 
 export {
     getElementSelector,
