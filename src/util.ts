@@ -124,6 +124,7 @@ function getAccessibleNameSVGRecursion(element: DomElement, processedHTML: DomEl
   let AName, ariaLabelBy, ariaLabel,id,tag;
   
   tag = element.name;
+  let regex = new RegExp(')^fe[a-zA-Z]+');
   let noAccessibleObjectOrChild = ["clipPath","cursor","defs","desc","metadata","pattern"]
   let noAccessibleObject = ["animate","animateMotion","animateTransform","discard","filter","hatch","hatchPath","linearGradient","marker","mask","meshPatch","meshRow","mpath","radialGradient","script","set","solidColor","stop","style","switch","view","title"]//fazer is "fe*",
   let specialElements = ["circle","elipse","line","path","polygon","polyline","rect","use","g","image","mesh","textPath","tspan","foreignObject"];//https://www.w3.org/TR/svg-aam-1.0/#include_elements
@@ -138,7 +139,7 @@ function getAccessibleNameSVGRecursion(element: DomElement, processedHTML: DomEl
   let titleAtt = DomUtil.getElementAttribute(element, "xlink:title");//tem de ser a
 
 
-  if (AccessibilityTreeUtils.isElementHidden(element) && !recursion) {
+  if (AccessibilityTreeUtils.isElementHidden(element) && !recursion || noAccessibleObject.contains(tag) || noAccessibleObjectOrChild.contains(tag)|| regex.test(tag)) {
     //noAName
   } else if (ariaLabelBy && ariaLabelBy !== "" && !(referencedByAriaLabel && recursion)) {
     AName = getAccessibleNameFromAriaLabelledBy(element, ariaLabelBy, processedHTML);
@@ -146,7 +147,7 @@ function getAccessibleNameSVGRecursion(element: DomElement, processedHTML: DomEl
     AName = ariaLabel;
   } else if (title && trim(title) !== "") {
     AName = title;
-  } else if (titleAtt && trim(titleAtt) !== "") {
+  } else if (titleAtt && trim(titleAtt) !== "") {//check if link
     AName = titleAtt;
   } else if (tag && tag === "text" ) {
     AName = AccessibilityTreeUtils.getTrimmedText(element);
