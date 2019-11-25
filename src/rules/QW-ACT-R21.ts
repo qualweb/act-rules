@@ -2,13 +2,14 @@
 
 import { ACTRule, ACTRuleResult } from '@qualweb/act-rules';
 import { DomElement } from 'htmlparser2';
-import { DomUtils as DomUtil, AccessibilityTreeUtils } from '@qualweb/util';
+import { DomUtils as DomUtil } from '@qualweb/util';
 import Rule from './Rule.object';
 import { trim } from 'lodash';
 const stew = new (require('stew-select')).Stew();
 import {
   getElementSelector,
-  transform_element_into_html
+  transform_element_into_html,
+  getAccessibleNameSVG
 } from '../util';
 
 const rule: ACTRule = {
@@ -69,7 +70,8 @@ class QW_ACT_R21 extends Rule {
       for (let elem of elementsToEvaluate) {
         let role = DomUtil.getElementAttribute(elem, "role");
         let isHidden = DomUtil.isElementHidden(elem);
-        let AName = await AccessibilityTreeUtils.getAccessibleNameSVG(url, getElementSelector(elem));
+        let AName =  getAccessibleNameSVG(elem, processedHTML);
+        console.log(AName+elem.name);
 
         if (roleList.indexOf(role) < 0||isHidden) {
           evaluation.verdict = 'inapplicable';

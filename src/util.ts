@@ -6,111 +6,112 @@ import clone from 'lodash/clone';
 import md5 from 'md5';
 const puppeteer = require('puppeteer');
 import { DomUtils as DomUtil, AccessibilityTreeUtils } from '@qualweb/util';
-import {trim} from 'lodash';
-
+import { trim } from 'lodash';
+const stew = new (require('stew-select')).Stew();
 
 function getSelfLocationInParent(element: DomElement): string {
-    let selector = '';
+  let selector = '';
 
-    if (element.name === 'body' || element.name === 'head') {
-        return element.name;
+  if (element.name === 'body' || element.name === 'head') {
+    return element.name;
+  }
+
+  let sameEleCount = 0;
+
+  let prev = element.prev;
+  while (prev) {
+    if (prev.type === 'tag' && prev.name === element.name) {
+      sameEleCount++;
     }
+    prev = prev.prev;
+  }
 
-    let sameEleCount = 0;
+  selector += `${element.name}:nth-of-type(${sameEleCount + 1})`;
 
-    let prev = element.prev;
-    while (prev) {
-        if (prev.type === 'tag' && prev.name === element.name) {
-            sameEleCount++;
-        }
-        prev = prev.prev;
-    }
-
-    selector += `${element.name}:nth-of-type(${sameEleCount + 1})`;
-
-    return selector;
+  return selector;
 }
 
 function getElementSelector(element: DomElement): string {
 
-    if (element.name === 'html') {
-        return 'html';
-    } else if (element.name === 'head') {
-        return 'html > head';
-    } else if (element.name === 'body') {
-        return 'html > body';
-    }
+  if (element.name === 'html') {
+    return 'html';
+  } else if (element.name === 'head') {
+    return 'html > head';
+  } else if (element.name === 'body') {
+    return 'html > body';
+  }
 
-    let selector = 'html > ';
+  let selector = 'html > ';
 
-    let parents = new Array<string>();
-    let parent = element.parent;
-    while (parent && parent.name !== 'html') {
-        parents.unshift(getSelfLocationInParent(parent));
-        parent = parent.parent;
-    }
-    selector += parents.join(' > ');
-    selector += ' > ' + getSelfLocationInParent(element);
+  let parents = new Array<string>();
+  let parent = element.parent;
+  while (parent && parent.name !== 'html') {
+    parents.unshift(getSelfLocationInParent(parent));
+    parent = parent.parent;
+  }
+  selector += parents.join(' > ');
+  selector += ' > ' + getSelfLocationInParent(element);
 
-    return selector;
+  return selector;
 }
 
 function transform_element_into_html(element: DomElement, withText: boolean = true, fullElement: boolean = false): string {
 
-    if (!element) {
-        return '';
-    }
+  if (!element) {
+    return '';
+  }
 
-    let codeElement: DomElement = clone(element);
+  let codeElement: DomElement = clone(element);
 
-    if (codeElement.attribs) {
-        delete codeElement.attribs['computed-style'];
-        delete codeElement.attribs['computed-style-after'];
-        delete codeElement.attribs['computed-style-before'];
-        delete codeElement.attribs['w-scrollx'];
-        delete codeElement.attribs['w-scrolly'];
-        delete codeElement.attribs['b-right'];
-        delete codeElement.attribs['b-bottom'];
-        delete codeElement.attribs['window-inner-height'];
-        delete codeElement.attribs['window-inner-width'];
-        delete codeElement.attribs['document-client-height'];
-        delete codeElement.attribs['document-client-width'];
-    }
+  if (codeElement.attribs) {
+    delete codeElement.attribs['computed-style'];
+    delete codeElement.attribs['computed-style-after'];
+    delete codeElement.attribs['computed-style-before'];
+    delete codeElement.attribs['w-scrollx'];
+    delete codeElement.attribs['w-scrolly'];
+    delete codeElement.attribs['b-right'];
+    delete codeElement.attribs['b-bottom'];
+    delete codeElement.attribs['window-inner-height'];
+    delete codeElement.attribs['window-inner-width'];
+    delete codeElement.attribs['document-client-height'];
+    delete codeElement.attribs['document-client-width'];
+  }
 
-    if (codeElement.attribs && codeElement.attribs.id && codeElement.attribs.id.startsWith('qw-generated-id')) {
-        delete codeElement.attribs.id;
-    }
+  if (codeElement.attribs && codeElement.attribs.id && codeElement.attribs.id.startsWith('qw-generated-id')) {
+    delete codeElement.attribs.id;
+  }
 
-    if (!fullElement) {
-        if (withText) {
-            let children = clone(codeElement.children);
-            codeElement.children = [];
+  if (!fullElement) {
+    if (withText) {
+      let children = clone(codeElement.children);
+      codeElement.children = [];
 
-            for (let child of children || []) {
-                if (child.type === 'text') {
-                    codeElement.children.push(clone(child));
-                }
-            }
-        } else {
-            codeElement.children = [];
+      for (let child of children || []) {
+        if (child.type === 'text') {
+          codeElement.children.push(clone(child));
         }
+      }
+    } else {
+      codeElement.children = [];
     }
+  }
 
-    return html(codeElement);
+  return html(codeElement);
 }
 
 async function getContentHash(url: string) {
-    const browser = await puppeteer.launch();
-    let content="";
-    try{
-        const page = await browser.newPage();
-        await page.goto(url, { 'waitUntil': 'networkidle0'});
-        content = await page.evaluate(() => {
-            return document.documentElement.innerHTML;
-        });}catch (e) {
-    }
-    await browser.close();
-    return md5(content.replace(/\s|\r/g, ""));
+  const browser = await puppeteer.launch();
+  let content = "";
+  try {
+    const page = await browser.newPage();
+    await page.goto(url, { 'waitUntil': 'networkidle0' });
+    content = await page.evaluate(() => {
+      return document.documentElement.innerHTML;
+    });
+  } catch (e) {
+  }
+  await browser.close();
+  return md5(content.replace(/\s|\r/g, ""));
 }
 
 
@@ -121,39 +122,50 @@ function getAccessibleNameSVG(element: DomElement, processedHTML: DomElement[]):
 //elementos q sao usados para outros: desc(descricao),title
 //link role if the element has a valid href or xlink:href attribute. For a elements that are not links, use the mapping for tspan if the a element is a descendent of text, or the mapping for g otherwise.
 function getAccessibleNameSVGRecursion(element: DomElement, processedHTML: DomElement[], recursion: boolean): string | undefined {
-  let AName, ariaLabelBy, ariaLabel,id,tag;
-  
+  let AName, ariaLabelBy, ariaLabel, id, tag;
+
   tag = element.name;
-  let regex = new RegExp(')^fe[a-zA-Z]+');
-  let noAccessibleObjectOrChild = ["clipPath","cursor","defs","desc","metadata","pattern"]
-  let noAccessibleObject = ["animate","animateMotion","animateTransform","discard","filter","hatch","hatchPath","linearGradient","marker","mask","meshPatch","meshRow","mpath","radialGradient","script","set","solidColor","stop","style","switch","view","title"]//fazer is "fe*",
-  let specialElements = ["circle","elipse","line","path","polygon","polyline","rect","use","g","image","mesh","textPath","tspan","foreignObject"];//https://www.w3.org/TR/svg-aam-1.0/#include_elements
-  let elementsLikeHtml = ["canvas","iframe","source","track","video"];
+  let regex = new RegExp('^fe[a-zA-Z]+');
+  let noAccessibleObjectOrChild = ["clipPath", "cursor", "defs", "desc", "metadata", "pattern"]
+  let noAccessibleObject = ["animate", "animateMotion", "animateTransform", "discard", "filter", "hatch", "hatchPath", "linearGradient", "marker", "mask", "meshPatch", "meshRow", "mpath", "radialGradient", "script", "set", "solidColor", "stop", "style", "switch", "view", "title"]//fazer is "fe*",
+  //let specialElements = ["circle","elipse","line","path","polygon","polyline","rect","use","g","image","mesh","textPath","tspan","foreignObject"];//https://www.w3.org/TR/svg-aam-1.0/#include_elements
+  let elementsLikeHtml = ["canvas", "iframe", "source", "track", "video"];
   if (element.attribs) {
     ariaLabelBy = DomUtil.getElementById(element.attribs["aria-labelledby"], processedHTML).length > 0 ? element.attribs["aria-labelledby"] : "";
     ariaLabel = element.attribs["aria-label"];
     id = element.attribs["id"];
   }
-  let referencedByAriaLabel = AccessibilityTreeUtils.isElementReferencedByAriaLabel(id, processedHTML, element);
-  let title =  DomUtil.getElementChildTextContent(element, "title");
+  let referencedByAriaLabel = isElementReferencedByAriaLabel(id, processedHTML, element);
+  let title = DomUtil.getElementChildTextContent(element, "title");
   let titleAtt = DomUtil.getElementAttribute(element, "xlink:title");//tem de ser a
+  let href = DomUtil.getElementAttribute(element, "href");;
 
-
-  if (AccessibilityTreeUtils.isElementHidden(element) && !recursion || noAccessibleObject.contains(tag) || noAccessibleObjectOrChild.contains(tag)|| regex.test(tag)) {
+  //console.log((DomUtil.isElementHidden(element) && !recursion) +"/"+ hasParentOfName(element,noAccessibleObjectOrChild) +"/"+ (noAccessibleObject.indexOf(tag) >= 0) +"/"+ (noAccessibleObjectOrChild.indexOf(tag) >= 0) +"/"+ regex.test(tag))
+  if (DomUtil.isElementHidden(element) && !recursion || hasParentOfName(element,noAccessibleObjectOrChild) || noAccessibleObject.indexOf(tag) >= 0 || noAccessibleObjectOrChild.indexOf(tag) >= 0 || regex.test(tag)) {
     //noAName
   } else if (ariaLabelBy && ariaLabelBy !== "" && !(referencedByAriaLabel && recursion)) {
     AName = getAccessibleNameFromAriaLabelledBy(element, ariaLabelBy, processedHTML);
+  } else if (elementsLikeHtml.indexOf(tag) >= 0) {
+    AName = AccessibilityTreeUtils.getAccessibleNameRecursion(element, processedHTML, false, false);
   } else if (ariaLabel && trim(ariaLabel) !== "") {
     AName = ariaLabel;
   } else if (title && trim(title) !== "") {
     AName = title;
-  } else if (titleAtt && trim(titleAtt) !== "") {//check if link
+  } else if (titleAtt && trim(titleAtt) !== "" && tag === "a" && href !== undefined) {//check if link
     AName = titleAtt;
-  } else if (tag && tag === "text" ) {
+  } else if (tag && tag === "text") {
     AName = AccessibilityTreeUtils.getTrimmedText(element);
-  } 
+  }
 
   return AName;
+}
+
+function isElementReferencedByAriaLabel(id: string, processedHTML: DomElement[], element: DomElement): boolean {
+
+  let refrencedByAriaLabel = stew.select(processedHTML, `[aria-labelledby="${id}"]`);
+
+  return refrencedByAriaLabel.length !== 0;
+
 }
 
 /*function getFirstNotUndefined(...args: any[]): string | undefined {
@@ -175,8 +187,15 @@ function getAccessibleNameSVGRecursion(element: DomElement, processedHTML: DomEl
 
   return result;
 }*/
+function hasParentOfName(element: DomElement, name: string[]) {
 
-
+  let parent = element.parent;
+  if (parent && parent.name) {
+    return name.indexOf(parent.name)>=0 || hasParentOfName(parent, name);
+  } else {
+    return false;
+   }
+}
 
 
 function getAccessibleNameFromAriaLabelledBy(element: DomElement, ariaLabelId: string, processedHTML: DomElement[]): string | undefined {
@@ -216,7 +235,8 @@ function getAccessibleNameFromAriaLabelledBy(element: DomElement, ariaLabelId: s
   }}*/
 
 export {
-    getElementSelector,
-    transform_element_into_html,
-    getContentHash
+  getElementSelector,
+  transform_element_into_html,
+  getContentHash,
+  getAccessibleNameSVG
 };
