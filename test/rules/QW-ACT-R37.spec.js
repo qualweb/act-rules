@@ -31,13 +31,17 @@ describe(`Rule ${rule}`, async function () {
       }
     });
 
-    // describe('Custom test wikipedia', function() {
+    // describe('Custom test', function() {
     //  it('should execute', async function() {
     //    this.timeout(1000 * 1000 * 1000);
 
-    //    const { sourceHtml, page, stylesheets } = await getDom(browser, 'https://www.accessibility.nl/wai-tools/validation-test-sites/wikipedia-wikipedia/');
+    //    const { sourceHtml, page, stylesheets } = await getDom(browser, 'https://www.amazon.com');
     //    const actRules = new ACTRules({ rules: [rule] });
     //    const report = await actRules.execute(sourceHtml, page, stylesheets);
+    //    fs = require('fs');
+    //     fs.writeFile('report2.json', JSON.stringify(report.rules, null, 2), function (err) {
+    //       if (err) return console.log(err);
+    //     });
     //  });
     // });
 
