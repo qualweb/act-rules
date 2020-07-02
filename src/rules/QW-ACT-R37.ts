@@ -1,15 +1,15 @@
 'use strict';
 
-import { ACTRuleResult } from '@qualweb/act-rules';
-import { AccessibilityUtils, DomUtils } from '@qualweb/util'
-import LanguageDetect from 'languagedetect';
-import pixelWidth from 'string-pixel-width';
+//import { ACTRuleResult } from '@qualweb/act-rules';
+//import { AccessibilityUtils, DomUtils } from '@qualweb/util'
+//import LanguageDetect from 'languagedetect';
+//import pixelWidth from 'string-pixel-width';
 import Rule from '../lib/Rule.object';
 import { ACTRule } from '../lib/decorator';
 import { QWElement } from '@qualweb/qw-element';
 import { QWPage } from '@qualweb/qw-page';
 
-const detector = new LanguageDetect();
+//const detector = new LanguageDetect();
 
 @ACTRule
 class QW_ACT_R37 extends Rule {
@@ -19,6 +19,7 @@ class QW_ACT_R37 extends Rule {
   }
 
   execute(element: QWElement | undefined, page: QWPage): void {
+    /*
 
     let disabledWidgets =  AccessibilityUtils.getDisabledWidgets(page);
 
@@ -215,9 +216,9 @@ class QW_ACT_R37 extends Rule {
           }
         }
       }
-    }
+    }*/
   }
-
+/*
   isImage(color){
     return color.toLowerCase().includes("jpeg") || color.toLowerCase().includes("jpg") || color.toLowerCase().includes("png") || color.toLowerCase().includes("svg");
   }
@@ -398,7 +399,7 @@ class QW_ACT_R37 extends Rule {
 
     return {"red": red, "green": green, "blue": blue, "alpha": 1};
 
-  }
+  }*/
 }
 
 export = QW_ACT_R37;

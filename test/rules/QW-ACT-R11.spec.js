@@ -33,9 +33,10 @@ describe(`Rule ${rule}`, async function () {
           sourceHtml.html.parsed = {};
           const report = await page.evaluate((sourceHtml, stylesheets, rules) => {
             const actRules = new ACTRules.ACTRules(rules);
-            const report = actRules.execute(sourceHtml, new QWPage.QWPage(document), stylesheets);
+            const report = actRules.execute(sourceHtml, new QWPage.QWPage(document,window), stylesheets);
             return report;
           }, sourceHtml, stylesheets, {rules: [rule]});
+          console.log(report.assertions[rule])
 
           expect(report.assertions[rule].metadata.outcome).to.be.equal(test.outcome);
         });

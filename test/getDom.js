@@ -8,7 +8,7 @@ const CSSselect = require('css-select');
 async function getDom(browser,url, viewport) {
     const page = await browser.newPage();
 
-    await page.setBypassCSP(true);
+    //await page.setBypassCSP(true);
 
     if (viewport) {
         await page.setViewport(viewport);
@@ -24,11 +24,10 @@ async function getDom(browser,url, viewport) {
     });
 
     await page.goto(url, {
-        timeout: 0,
-        waitUntil: ['networkidle2', 'domcontentloaded']
+        waitUntil: 'networkidle'
     });
 
-
+    
     const sourceHtml = await getSourceHTML(url);
     //let stylesheets = [];
 
@@ -48,6 +47,7 @@ async function getDom(browser,url, viewport) {
             mappedDOM[item['_node_id']] = item;
 
     await mapCSSElements(sourceHtml.html.parsed, stylesheets, mappedDOM);
+    let sourceHtml,stylesheets;
 
     return { sourceHtml, page, stylesheets };
 }
