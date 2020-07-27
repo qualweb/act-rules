@@ -11,6 +11,8 @@ class ACTRules {
   private rules: any;
   private rulesToExecute: any;
   private total = 0;
+  private rulesToTime = {}
+
 
   constructor(options?: ACTROptions) {
     this.rules = {};
@@ -118,18 +120,16 @@ class ACTRules {
     const promises = new Array<any>();
     for (const selector of selectors || []) {
       for (const rule of mappedRules[selector] || []) {
-        console.log(rule)
         if (this.rulesToExecute[rule]) {
           let start = new Date().getTime();
           promises.push(this.executeRule(rule, selector, page, report, concurrent));
           let end = new Date().getTime();
           let duration = end-start;
+          this.rulesToTime[rule]= duration;
           this.total+= duration;
-          console.log(rule + "Duration: "+ duration);
         }
       }
     }
-    console.log("Total:" + this.total);
   }
 
   private executeNotMappedRules(report: ACTRulesReport, metaElements: any[]): void {
@@ -185,6 +185,16 @@ class ACTRules {
     this.executeNonConcurrentRules(report, page);
     this.executeConcurrentRules(report, page);
     this.executeNotMappedRules(report, metaElements);
+    console.log(this.rulesToTime);
+    let keys = Object.keys(this.rulesToTime)
+    for(let key of keys){
+      let value = this.rulesToTime[key];
+      this.rulesToTime[key] = (value/ this.total)*100;
+    }
+    console.log(this.rulesToTime);
+
+    console.log("Total:" + this.total);
+
 
     return report;
   }
