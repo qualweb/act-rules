@@ -6,7 +6,7 @@ import Rule from '../lib/Rule.object';
 import { 
   ACTRule, 
   ElementExists,
-  ElementIsInAccessibilityTree,
+ ElementIsInAccessibilityTree,
   ElementHasAttributeRole
 } from '../lib/decorator';
 import { QWElement } from '@qualweb/qw-element';

@@ -1,7 +1,7 @@
 'use strict';
 
 import { ACTRuleResult } from '@qualweb/act-rules';
-import {  DomUtils, AccessibilityUtils } from '@qualweb/util';
+import {  DomUtils } from '@qualweb/util';
 import Rule from '../lib/Rule.object';
 import { ACTRule, ElementExists } from '../lib/decorator';
 import {QWElement} from "@qualweb/qw-element";
@@ -24,9 +24,6 @@ class QW_ACT_R48 extends Rule {
     };
     
     const isInAT = !(DomUtils.isElementHidden(element,page) || DomUtils.isElementPresentation(element,page));
-    console.log(AccessibilityUtils.getElementRole(element,page))
-    console.log(AccessibilityUtils.isElementInAT(element,page))
-    console.log(isInAT);
      
     if (isInAT) {
         evaluation.verdict = 'failed';

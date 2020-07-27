@@ -10,6 +10,7 @@ class ACTRules {
   private optimization: Optimization;
   private rules: any;
   private rulesToExecute: any;
+  private total = 0;
 
   constructor(options?: ACTROptions) {
     this.rules = {};
@@ -117,11 +118,18 @@ class ACTRules {
     const promises = new Array<any>();
     for (const selector of selectors || []) {
       for (const rule of mappedRules[selector] || []) {
+        console.log(rule)
         if (this.rulesToExecute[rule]) {
+          let start = new Date().getTime();
           promises.push(this.executeRule(rule, selector, page, report, concurrent));
+          let end = new Date().getTime();
+          let duration = end-start;
+          this.total+= duration;
+          console.log(rule + "Duration: "+ duration);
         }
       }
     }
+    console.log("Total:" + this.total);
   }
 
   private executeNotMappedRules(report: ACTRulesReport, metaElements: any[]): void {
