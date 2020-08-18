@@ -27,16 +27,19 @@ describe(`Rule ${rule}`, async function () {
           console.log(test.url);
 
           await page.addScriptTag({
+<<<<<<< HEAD
+            path: require.resolve('@qualweb/qw-page').replace('index.js', 'qwPage.js')
+=======
                         path: require.resolve('@qualweb/qw-page').replace('index.js', 'qwPage.js')
 
+>>>>>>> develop
           })
           await page.addScriptTag({
             path: require.resolve('../../dist/act.js')
           })
-          sourceHtml.html.parsed = {};
           const report = await page.evaluate((sourceHtml, stylesheets, rules) => {
-            const actRules = new ACTRules.ACTRules(rules);
-            const report = actRules.execute(sourceHtml, new QWPage.QWPage(document), stylesheets);
+            const actRules = new ACTRules.ACTRules();
+            const report = actRules.execute([], new QWPage.QWPage(document,window), []);
             return report;
           }, sourceHtml, stylesheets, {rules: [rule]});
 

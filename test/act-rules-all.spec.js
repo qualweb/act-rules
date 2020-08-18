@@ -13,18 +13,18 @@ describe('ACT-Rules module', function () {
     //['chromium', 'firefox', 'webkit']
     const browser = await playwright['chromium'].launch({headless:false});
     const context = await browser.newContext({bypassCSP:true});
-    const { sourceHtml, page, stylesheets } = await getDom(context, "https://www.pcdiga.com/");//https://www.amazon.com/
+    const { sourceHtml, page, stylesheets } = await getDom(context, "https://www.youtube.com/");//https://www.amazon.com/
     //https://observador.pt/
 
     /*  const browser = await puppeteer.launch({
       });
-      const { sourceHtml, page, stylesheets } = await getDom(browser, 'https://www.accessibility.nl/wai-tools/validation-test-sites/wikipedia-wikipedia/');//'https://www.pcdiga.com/'
+      const { sourceHtml, page, stylesheets } = await getDom(browser, 'https://www.pcdiga.com/');//'https://www.pcdiga.com/'
       */
     // const browser = await puppeteer.connect({ browserURL: 'http://127.0.0.1:9222/', defaultViewport: null });
     //https://www.accessibility.nl/wai-tools/validation-test-sites/wikipedia-wikipedia/
    /* const browser = await puppeteer.launch({headless:false});
     const dom = new Dom();
-    const { sourceHtml, page, stylesheets } = await dom.getDOM(browser, {}, " https://www.metrolisboa.pt/en/", null);*/
+    const { sourceHtml, page, stylesheets } = await dom.getDOM(browser, {}, "https://www.pcdiga.com/", null);*/
 
     try {
       await page.addScriptTag({
@@ -38,7 +38,9 @@ describe('ACT-Rules module', function () {
       console.log("Evaluating")
       const report = await page.evaluate((stylesheets) => {
         const actRules = new ACTRules.ACTRules();
-        const report = actRules.execute([], new QWPage.QWPage(document, window, true), stylesheets);
+        const page =  new QWPage.QWPage(document, window, true);
+        const report = actRules.execute([],page, []);
+
         return report;
       }, []);
       const fs = require('fs')

@@ -35,7 +35,7 @@ describe(`Rule ${rule}`, async function () {
           })
           const report = await page.evaluate((sourceHtml, stylesheets, rules) => {
             const actRules = new ACTRules.ACTRules(rules);
-            const report = actRules.execute([], new QWPage.QWPage(document,window), []);
+            const report = actRules.execute(sourceHtml, new QWPage.QWPage(document,window), stylesheets);
             return report;
           }, sourceHtml, stylesheets, {rules: [rule]});
           console.log(report.assertions[rule])

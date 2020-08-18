@@ -1,8 +1,9 @@
-import { ACTROptions, ACTRulesReport } from '@qualweb/act-rules';
+import { ACTROptions, ACTRulesReport, ACTRule } from '@qualweb/act-rules';
 import { Optimization } from '@qualweb/util';
 import * as rules from './lib/rules';
 
 import mapping from './lib/mapping';
+import compositeRules from './lib/mappingComposite';
 import { QWPage } from '@qualweb/qw-page';
 
 class ACTRules {
@@ -132,7 +133,7 @@ class ACTRules {
     }
   }
 
-  private executeNotMappedRules(report: ACTRulesReport, metaElements: any[]): void {
+  private executeNotMappedRules(report: ACTRulesReport, metaElements: any[], page: QWPage): void {
     if (this.rulesToExecute['QW-ACT-R4']) {
       if (metaElements.length > 0) {
         for (const elem of metaElements || []) {
@@ -145,6 +146,57 @@ class ACTRules {
       report.metadata[report.assertions['QW-ACT-R4'].metadata.outcome]++;
       this.rules['QW-ACT-R4'].reset();
     }
+    if (this.rulesToExecute['QW-ACT-R37']) {
+      let start = new Date().getTime();
+      this.rules['QW-ACT-R37'].execute(undefined, page);
+      report.assertions['QW-ACT-R37'] = this.rules['QW-ACT-R37'].getFinalResults();
+      report.metadata[report.assertions['QW-ACT-R37'].metadata.outcome]++;
+      this.rules['QW-ACT-R37'].reset();
+      let end = new Date().getTime();
+      let duration = end-start;
+      this.rulesToTime['QW-ACT-R37']= duration;
+      this.total+= duration;
+    }
+  }
+
+  private executeAllCompositeRules(report: ACTRulesReport, page: QWPage) {
+    const promises = new Array<any>();
+    console.log(report)
+    let rules = Object.keys(compositeRules);
+    for (const rule of rules || []) {
+      if (this.rulesToExecute[rule]) {
+        promises.push(this.executeCompositeRule(rule, compositeRules[rule].selector, compositeRules[rule].rules, compositeRules[rule].implementation, page, report));
+      }
+    }
+
+  }
+  private executeCompositeRule(rule: string, selector: string, atomicRules: string[], implementation: string, page: QWPage, report: ACTRulesReport): void {
+
+
+    let atomicRulesReport: ACTRule[] = [];
+
+    for (let atomicRule of atomicRules) {
+      atomicRulesReport.push(report.assertions[atomicRule])
+    }
+    const elements = page.getElements(selector);
+    if (elements.length > 0) {
+      for (const elem of elements || []) {
+        if (implementation === "conjunction") {
+          this.rules[rule].conjunction(elem, atomicRulesReport);
+        } else if (implementation === "dijunction") {
+          this.rules[rule].dijunction(elem, atomicRulesReport);
+        } else {
+          this.rules[rule].execute(elem, atomicRulesReport);
+        }
+      }
+    } else {
+      this.rules[rule].execute(undefined, page, this.optimization);
+    }
+
+
+    report.assertions[rule] = this.rules[rule].getFinalResults();
+    report.metadata[report.assertions[rule].metadata.outcome]++;
+    this.rules[rule].reset();
   }
 
   private executeNonConcurrentRules(report: ACTRulesReport, page: QWPage): void {
@@ -155,7 +207,7 @@ class ACTRules {
     this.executePageMappedRules(report, page, Object.keys(mapping.concurrent.post), mapping.concurrent.post, true)
   }
 
-  public executeQW_ACT_R40(page: QWPage,): any {
+  public executeQW_ACT_R40(page: QWPage, ): any {
     const elements = page.getElements('body *');
 
     if (elements.length > 0) {
@@ -171,7 +223,7 @@ class ACTRules {
 
   public execute(metaElements: any[], page: QWPage): ACTRulesReport {
 
-    const report: ACTRulesReport = {
+    let report: ACTRulesReport = {
       type: 'act-rules',
       metadata: {
         passed: 0,
@@ -184,7 +236,7 @@ class ACTRules {
 
     this.executeNonConcurrentRules(report, page);
     this.executeConcurrentRules(report, page);
-    this.executeNotMappedRules(report, metaElements);
+    this.executeNotMappedRules(report, metaElements, page);
     console.log(this.rulesToTime);
     let keys = Object.keys(this.rulesToTime)
     for(let key of keys){
@@ -195,6 +247,7 @@ class ACTRules {
 
     console.log("Total:" + this.total);
 
+    this.executeAllCompositeRules(report,page);
 
     return report;
   }

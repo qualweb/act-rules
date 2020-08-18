@@ -5,11 +5,11 @@ import { AccessibilityUtils } from '@qualweb/util';
 import ariaJSON from '../lib/ariaAttributesRoles.json';
 import rolesJSON from '../lib/roles.json';
 import Rule from '../lib/Rule.object';
-import { ACTRule, ElementExists } from '../lib/decorator';
+import { ACTRuleDecorator, ElementExists } from '../lib/decorator';
 import { QWElement } from "@qualweb/qw-element";
 import { QWPage } from "@qualweb/qw-page";
 
-@ACTRule
+@ACTRuleDecorator
 class QW_ACT_R25 extends Rule {
 
   constructor(rule?: any) {
@@ -36,7 +36,8 @@ class QW_ACT_R25 extends Rule {
       const elemAttribs = elem.getElementAttributesName();
 
       for (const attrib of elemAttribs || []) {
-        if (Object.keys(ariaJSON).includes(attrib)) {
+        let keys = Object.keys(ariaJSON);
+        if (!!keys && !!attrib && keys.includes(attrib)) {
           const evaluation: ACTRuleResult = {
             verdict: '',
             description: '',
@@ -46,7 +47,7 @@ class QW_ACT_R25 extends Rule {
           //if is in the accessibility tree
           if (isInAT) {
             // if valid aria attribute
-            if (ariaJSON[attrib]['global'] === 'yes' || (elemRole !== null && rolesJSON[elemRole] && (rolesJSON[elemRole]['requiredAria'].includes(attrib) || rolesJSON[elemRole]['supportedAria'].includes(attrib)))) {
+            if (ariaJSON[attrib]['global'] === 'yes' || (elemRole !== null && !!rolesJSON[elemRole] && !!rolesJSON[elemRole]['requiredAria'] && (rolesJSON[elemRole]['requiredAria'].includes(attrib) || rolesJSON[elemRole]['supportedAria'].includes(attrib)))) {
               evaluation.verdict = 'passed';
               evaluation.description = `The \`${attrib}\` property is supported or inherited by the \`role\` ${elemRole}.`;
               evaluation.resultCode = 'RC1';

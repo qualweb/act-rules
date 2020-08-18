@@ -4,11 +4,11 @@ import { ACTRuleResult } from '@qualweb/act-rules';
 import {AccessibilityUtils} from '@qualweb/util';
 import rolesJSON from '../lib/roles.json';
 import Rule from '../lib/Rule.object';
-import { ACTRule, ElementExists } from '../lib/decorator';
+import { ACTRuleDecorator, ElementExists } from '../lib/decorator';
 import {QWElement} from "@qualweb/qw-element";
 import {QWPage} from "@qualweb/qw-page";
 
-@ACTRule
+@ACTRuleDecorator
 class QW_ACT_R33 extends Rule {
 
   constructor(rule?: any) {
@@ -32,9 +32,8 @@ class QW_ACT_R33 extends Rule {
     if (explicitRole !== null && isValidRole && explicitRole !== implicitRole && isInAT && rolesJSON[explicitRole]['requiredContextRole'] !== '') {
       const requiredContextRole = rolesJSON[explicitRole]['requiredContextRole'];
       const id = element.getElementAttribute('id');
-      const treeSelector = element.getTreeSelector();
 
-      const ariaOwns = page.getElement('[aria-owns' + `="${id}"]`+ treeSelector);
+      const ariaOwns = page.getElement('[aria-owns' + `="${id}"]`,element);
 
       if (ariaOwns !== null) {
         const ariaOwnsRole = AccessibilityUtils.getElementRole(ariaOwns, page);
@@ -61,12 +60,19 @@ class QW_ACT_R33 extends Rule {
       evaluation.description = `The test target is not in the accessibility tree or doesn't have an explicit \`role\` with the required context \`role\``;
       evaluation.resultCode = 'RC5';
     }
+    console.log(evaluation.resultCode);
 
     super.addEvaluationResult(evaluation, element);
   }
 
   private isElementADescendantOf(element: QWElement, page: QWPage, roles: string[]): boolean {
-    const parent = element.getElementParent();
+    let parent = element.getElementParent();
+    if(!parent){
+      let documentSelector= element.getElementAttribute("_documentSelector")
+      if(!!documentSelector && !documentSelector.includes("iframe")){
+        parent = page.getElement(documentSelector);
+      }
+    }
     let result = false;
     let sameRole;
 

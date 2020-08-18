@@ -5,7 +5,6 @@ export default {
     },
     'post': {
       'title': ['QW-ACT-R1'],
-      '*': ['QW-ACT-R37'],
       'body *': ['QW-ACT-R43']
     }
   },
@@ -28,10 +27,10 @@ export default {
       '[role]': ['QW-ACT-R20','QW-ACT-R33'],
       'img, [role="img"]':  ['QW-ACT-R17'],
       'iframe': ['QW-ACT-R19'],
-      'audio':['QW-ACT-R29'],
+      'audio':['QW-ACT-R58','QW-ACT-R59'],
       '[aria-label], [aria-labelledby]': ['QW-ACT-R30'],
-      'video': ['QW-ACT-R23', 'QW-ACT-R26', 'QW-ACT-R31', 'QW-ACT-R32'],
-      'audio, video': ['QW-ACT-R15'],
+      'video': ['QW-ACT-R51','QW-ACT-R52','QW-ACT-R53','QW-ACT-R54','QW-ACT-R55','QW-ACT-R56','QW-ACT-R57','QW-ACT-R60','QW-ACT-R61'],
+      'audio, video': ['QW-ACT-R49','QW-ACT-R50'],
       'input[autocomplete], select[autocomplete], textarea[autocomplete]' : ['QW-ACT-R24'],
       'h1,h2,h3,h4,h5,h6,[role="heading"]': ['QW-ACT-R35'],
       '[headers]': ['QW-ACT-R36'],
