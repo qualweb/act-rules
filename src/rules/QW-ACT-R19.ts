@@ -1,7 +1,7 @@
 'use strict';
 
 import { ACTRuleResult } from '@qualweb/act-rules';
-import { AccessibilityUtils, DomUtils } from '@qualweb/util';
+import { AccessibilityUtils } from '@qualweb/util';
 import Rule from '../lib/Rule.object';
 import { ACTRuleDecorator, ElementExists } from '../lib/decorator';
 import {QWElement} from "@qualweb/qw-element";
@@ -22,11 +22,9 @@ class QW_ACT_R19 extends Rule {
       description: '',
       resultCode: ''
     };
-
-    const hidden = DomUtils.isElementHiddenByCSS(element,page);
     const tabIndex = element.getElementAttribute("tabindex");
-    const presentation = DomUtils.isElementPresentation(element, page);
-    if (hidden || (presentation && tabIndex && parseInt(tabIndex) < 0)) {
+    const inAt = AccessibilityUtils.isElementInAT(element, page);
+    if (inAt || (tabIndex && parseInt(tabIndex) < 0)) {
       evaluation.verdict = 'inapplicable';
       evaluation.description = `The test target is not included in the accessibility tree.`;
       evaluation.resultCode = 'RC1';

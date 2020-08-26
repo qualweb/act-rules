@@ -1,5 +1,5 @@
 import { ACTRuleResult } from '@qualweb/act-rules';
-import { DomUtils } from '@qualweb/util';
+import { AccessibilityUtils } from '@qualweb/util';
 import Rule from '../lib/Rule.object';
 import { ACTRuleDecorator, ElementExists } from '../lib/decorator';
 import { QWElement } from '@qualweb/qw-element';
@@ -21,7 +21,7 @@ class QW_ACT_R48 extends Rule {
       resultCode: ''
     };
     
-    const isInAT = !(DomUtils.isElementHidden(element,page) || DomUtils.isElementPresentation(element, page));
+    const isInAT = AccessibilityUtils.isElementInAT(element, page);
      
     if (isInAT) {
       evaluation.verdict = 'failed';

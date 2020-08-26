@@ -207,7 +207,8 @@ class ACTRules {
     this.executePageMappedRules(report, page, Object.keys(mapping.concurrent.post), mapping.concurrent.post, true)
   }
 
-  public executeQW_ACT_R40(page: QWPage, ): any {
+  public executeQW_ACT_R40(page: QWPage ): any {
+    let start = new Date().getTime();
     const elements = page.getElements('body *');
 
     if (elements.length > 0) {
@@ -217,6 +218,9 @@ class ACTRules {
     } else {
       this.rules['QW-ACT-R40'].execute(undefined, page, this.optimization);
     }
+    let end = new Date().getTime();
+    let duration = end-start;
+    console.log("R40 - " +duration)
 
     return this.rules['QW-ACT-R40'].getFinalResults();
   }
