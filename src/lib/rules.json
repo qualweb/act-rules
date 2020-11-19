@@ -1764,5 +1764,33 @@
       "related": [],
       "url": "https://act-rules.github.io/rules/oj04fd"
     }
+  },
+  "QW_ACT_R63": {
+    "name": "HTML page has a main landmark",
+    "code": "QW-ACT-R63",
+    "mapping": "b40fd1",
+    "description": "This rule checks that each page has an element with a semantic role of `main`",
+    "metadata": {
+      "target": {
+        "element": "*"
+      },
+      "success-criteria": [],
+      "related": [],
+      "url": "https://github.com/act-rules/act-rules.github.io/blob/7a97ecb08213655d923781a17b3d363a77d15eef/_rules/document-has-main-landmark-b40fd1.md"
+    }
+  },
+  "QW_ACT_R64": {
+    "name": "Document has heading for main section of content",
+    "code": "QW-ACT-R64",
+    "mapping": "047fe0",
+    "description": "This rule checks that the main section of content starts with a heading",
+    "metadata": {
+      "target": {
+        "element": "main,[role='main']"
+      },
+      "success-criteria": [],
+      "related": [],
+      "url": "https://github.com/act-rules/act-rules.github.io/blob/7a97ecb08213655d923781a17b3d363a77d15eef/_rules/document-has-headings-for-main-section-of-content-047fe0.md"
+    }
   }
 }
