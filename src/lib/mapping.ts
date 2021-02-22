@@ -18,6 +18,7 @@ export default {
       'QW-ACT-R38'
     ],
     body: [
+      'QW-ACT-R63',
       'QW-ACT-R62',
       'QW-ACT-R9',
       'QW-ACT-R10',
@@ -25,7 +26,8 @@ export default {
       'QW-ACT-R27',
       'QW-ACT-R28',
       'QW-ACT-R34',
-      'QW-ACT-R44'
+      'QW-ACT-R44',
+      'QW-ACT-R64'
     ],
     'input, select, textarea, [role]': ['QW-ACT-R16', 'QW-ACT-R41'],
     '[role]': ['QW-ACT-R20', 'QW-ACT-R33'],
@@ -57,6 +59,6 @@ export default {
       'QW-ACT-R66'
     ],
     '*': ['QW-ACT-R7', 'QW-ACT-R65'],
-    'iframe[tabindex]':['QW-ACT-R70'],
+    'iframe[tabindex]':['QW-ACT-R70']
   }
 };
