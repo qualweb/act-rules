@@ -14,14 +14,14 @@ class QW_ACT_R28 extends AtomicRule {
   execute(element: typeof window.qwElement): void {
     const rolesJSON = window.AccessibilityUtils.roles;
     // get all elements
-    const allElements = element.getElements('[role]');
+    const allElements = element.findAll('[role]');
     for (const elem of allElements || []) {
       const test = new Test();
 
-      const elemRole = elem.getElementAttribute('role');
-      const elemAttribs = elem.getElementAttributesName();
-      const implicitRole = window.AccessibilityUtils.getImplicitRole(elem, ''); //FIXME
-      const isInAT = window.AccessibilityUtils.isElementInAT(elem);
+      const elemRole = elem.getAttribute('role');
+      const elemAttribs = elem.getAttributeNames();
+      const implicitRole = elem.getImplicitRole(''); //FIXME
+      const isInAT = elem.isInTheAccessibilityTree();
 
       if (isInAT && implicitRole !== elemRole && elemRole !== null && Object.keys(rolesJSON).includes(elemRole)) {
         //@ts-ignore
@@ -43,7 +43,7 @@ class QW_ACT_R28 extends AtomicRule {
           while (i < requiredAriaList.length && result) {
             requiredAria = requiredAriaList[i];
             if (elemAttribs && elemAttribs.includes(requiredAria) && !implicitRoles.includes(requiredAria)) {
-              const attrValue = elem.getElementAttribute(requiredAria);
+              const attrValue = elem.getAttribute(requiredAria);
               result = (attrValue ? attrValue.trim() : '') !== '';
             } else {
               result = implicitRoles.includes(requiredAria);

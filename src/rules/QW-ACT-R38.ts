@@ -17,15 +17,15 @@ class QW_ACT_R38 extends AtomicRule {
 
     const test = new Test();
 
-    const explicitRole = element.getElementAttribute('role');
-    const implicitRole = window.AccessibilityUtils.getImplicitRole(element, ''); //fixme
-    const ariaBusy = this.isElementADescendantOfAriaBusy(element) || element.getElementAttribute('aria-busy');
+    const explicitRole = element.getAttribute('role');
+    const implicitRole = element.getImplicitRole(''); //fixme
+    const ariaBusy = this.isElementADescendantOfAriaBusy(element) || element.getAttribute('aria-busy');
 
     if (explicitRole !== null && explicitRole !== implicitRole && explicitRole !== 'combobox' && !ariaBusy) {
       const result = this.checkOwnedElementsRole(
         //@ts-ignore
         rolesJSON[explicitRole]['requiredOwnedElements'],
-        window.AccessibilityUtils.getOwnedElements(element)
+        element.getOwnedElements()
       );
 
       if (result) {
@@ -50,7 +50,7 @@ class QW_ACT_R38 extends AtomicRule {
     while (i < elements.length && !end) {
       hasOwnedRole = false;
       currentElement = elements[i];
-      const role = window.AccessibilityUtils.getElementRole(currentElement);
+      const role = currentElement.getRole();
       while (j < ownedRoles.length && !hasOwnedRole) {
         currentOwnedRole = ownedRoles[j];
         if (currentOwnedRole.length === 1) {
@@ -58,10 +58,7 @@ class QW_ACT_R38 extends AtomicRule {
         } else {
           hasOwnedRole =
             role === currentOwnedRole[0] &&
-            this.checkOwnedElementsRole(
-              [[currentOwnedRole[1]]],
-              window.AccessibilityUtils.getOwnedElements(currentElement)
-            );
+            this.checkOwnedElementsRole([[currentOwnedRole[1]]], currentElement.getOwnedElements());
         }
         j++;
       }
@@ -78,13 +75,13 @@ class QW_ACT_R38 extends AtomicRule {
   }
 
   private isElementADescendantOfAriaBusy(element: typeof window.qwElement): boolean {
-    const parent = element.getElementParent();
+    const parent = element.getParent();
     let result = false;
 
     if (parent !== null) {
-      const inAt = window.AccessibilityUtils.isElementInAT(parent);
+      const inAt = parent.isInTheAccessibilityTree();
       if (inAt) {
-        result = !!parent.getElementAttribute('aria-busy');
+        result = !!parent.getAttribute('aria-busy');
       }
       if (!result) {
         return this.isElementADescendantOfAriaBusy(parent);

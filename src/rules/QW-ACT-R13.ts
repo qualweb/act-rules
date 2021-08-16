@@ -14,7 +14,7 @@ class QW_ACT_R13 extends AtomicRule {
   execute(element: typeof window.qwElement): void {
     const test = new Test();
 
-    const children = element.getElementChildren();
+    const children = element.getChildren();
     if (children.length > 0) {
       const focusable = this.isFocusableChildren(element);
       if (focusable) {
@@ -25,7 +25,7 @@ class QW_ACT_R13 extends AtomicRule {
         test.resultCode = 'P1';
       }
     } else {
-      const focusable = window.AccessibilityUtils.isPartOfSequentialFocusNavigation(element);
+      const focusable = element.isPartOfSequentialFocusNavigation();
       if (focusable) {
         test.verdict = 'failed';
         test.resultCode = 'F2';
@@ -40,10 +40,10 @@ class QW_ACT_R13 extends AtomicRule {
   }
 
   private isFocusableChildren(element: typeof window.qwElement): boolean {
-    let result = window.AccessibilityUtils.isPartOfSequentialFocusNavigation(element);
-    const children = element.getElementChildren();
+    let result = element.isPartOfSequentialFocusNavigation();
+    const children = element.getChildren();
     for (const child of children || []) {
-      const focusable = window.AccessibilityUtils.isPartOfSequentialFocusNavigation(child);
+      const focusable = child.isPartOfSequentialFocusNavigation();
       if (focusable) {
         result = true;
       } else {

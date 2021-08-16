@@ -14,7 +14,7 @@ class QW_ACT_R6 extends AtomicRule {
   @IsHTMLDocument
   @ElementIsInAccessibilityTree
   execute(element: typeof window.qwElement): void {
-    const accessibleName = window.AccessibilityUtils.getAccessibleName(element);
+    const accessibleName = element.getAccessibleName();
 
     const test = new Test();
 

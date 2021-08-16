@@ -12,9 +12,9 @@ class QW_ACT_R62 extends AtomicRule {
 
   @ElementExists
   execute(element: typeof window.qwElement): void {
-    const elementList = element.getElements('*');
+    const elementList = element.findAll('*');
     const inSequentialFocusList = elementList.filter((element) => {
-      return window.AccessibilityUtils.isPartOfSequentialFocusNavigation(element);
+      return element.isPartOfSequentialFocusNavigation();
     });
 
     if (inSequentialFocusList.length > 1) {

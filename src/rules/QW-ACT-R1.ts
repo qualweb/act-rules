@@ -22,10 +22,10 @@ class QW_ACT_R1 extends AtomicRule {
         test.resultCode = 'F1';
       }
       //the title element is empty
-      else if (!element.getElementText() || element.getElementText().trim() === '') {
+      else if (!element.getText() || element.getText()?.trim() === '') {
         test.verdict = 'failed';
         test.resultCode = 'F2';
-      } else if (element.getElementAttribute('_documentSelector')) {
+      } else if (element.getAttribute('_documentSelector')) {
         test.verdict = 'failed';
         test.resultCode = 'F3';
       } else {

@@ -12,13 +12,13 @@ class QW_ACT_R19 extends AtomicRule {
 
   @ElementExists
   execute(element: typeof window.qwElement): void {
-    const tabIndex = element.getElementAttribute('tabindex');
-    const isInAT = window.AccessibilityUtils.isElementInAT(element);
+    const tabIndex = element.getAttribute('tabindex');
+    const isInAT = element.isInTheAccessibilityTree();
 
     if (isInAT && (!tabIndex || parseInt(tabIndex) >= 0)) {
       const test = new Test();
 
-      const accessibleName = window.AccessibilityUtils.getAccessibleName(element);
+      const accessibleName = element.getAccessibleName();
       if (accessibleName && accessibleName.trim() !== '') {
         test.verdict = 'passed';
         test.resultCode = 'P1';

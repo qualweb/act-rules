@@ -114,7 +114,7 @@ class ACTRules {
   }
 
   private executeRule(rule: string, selector: string): void {
-    const elements = window.qwPage.getElements(selector);
+    const elements = window.qwPage.findAll(selector);
     if (elements.length > 0) {
       for (const elem of elements ?? []) {
         this.rules[rule].execute(elem);
@@ -138,7 +138,7 @@ class ACTRules {
     for (const atomicRule of atomicRules ?? []) {
       atomicRulesReport.push(this.report.assertions[atomicRule]);
     }
-    const elements = window.qwPage.getElements(selector);
+    const elements = window.qwPage.findAll(selector);
     if (elements.length > 0) {
       for (const elem of elements || []) {
         if (implementation === 'conjunction') {
@@ -205,7 +205,7 @@ class ACTRules {
 
   public validateZoomedTextNodeNotClippedWithCSSOverflow(): void {
     if (this.rulesToExecute['QW-ACT-R40']) {
-      const elements = window.qwPage.getElements('body *');
+      const elements = window.qwPage.findAll('body *');
 
       for (const elem of elements ?? []) {
         this.rules['QW-ACT-R40'].execute(elem);

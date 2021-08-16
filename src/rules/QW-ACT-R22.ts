@@ -21,7 +21,7 @@ class QW_ACT_R22 extends AtomicRule {
   execute(element: typeof window.qwElement): void {
     const test = new Test();
 
-    const lang = (<string>element.getElementAttribute('lang')).toLowerCase();
+    const lang = (<string>element.getAttribute('lang')).toLowerCase();
     const subTag = lang.split('-')[0];
 
     if (lang !== '') {

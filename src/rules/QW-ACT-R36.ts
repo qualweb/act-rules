@@ -16,12 +16,12 @@ class QW_ACT_R36 extends AtomicRule {
 
     const parentTableElem = getFirstAncestorElementByNameOrRoles(element, ['table'], []);
     if (parentTableElem !== null) {
-      const isInAT = window.AccessibilityUtils.isElementInAT(parentTableElem);
+      const isInAT = parentTableElem.isInTheAccessibilityTree();
       if (isInAT) {
-        const isVisible = window.DomUtils.isElementVisible(parentTableElem);
+        const isVisible = parentTableElem.isVisible();
         if (isVisible) {
           const headerAttributes: string[] = [];
-          const elementHeaders = element.getElementAttribute('headers');
+          const elementHeaders = element.getAttribute('headers');
           const headers = (elementHeaders ? elementHeaders : '').split(' ');
           for (const header of headers) {
             if (headerAttributes.indexOf(header) < 0) {
@@ -38,7 +38,7 @@ class QW_ACT_R36 extends AtomicRule {
               test.description = super.getTranslation('F1', { attr: headerAttributes[i] });
               test.resultCode = 'F1';
             } else {
-              idElemRole = window.AccessibilityUtils.getElementRole(idElem);
+              idElemRole = idElem.getRole();
               if (idElemRole !== 'rowheader' && idElemRole !== 'columnheader') {
                 test.verdict = 'failed';
                 test.description = super.getTranslation('F2', { attr: headerAttributes[i] });
@@ -66,14 +66,14 @@ function getFirstAncestorElementByNameOrRoles(
   names: string[],
   roles: string[]
 ): typeof window.qwElement | null {
-  const parent = element.getElementParent();
+  const parent = element.getParent();
   let result = false;
   let sameRole = false,
     sameName = false;
 
   if (parent !== null) {
-    const parentName = parent.getElementTagName();
-    const parentRole = window.AccessibilityUtils.getElementRole(parent);
+    const parentName = parent.getTagName();
+    const parentRole = parent.getRole();
 
     if (parentName !== null) {
       sameName = names.includes(parentName);
@@ -96,7 +96,7 @@ function getElementByIdInElement(element: typeof window.qwElement, id: string): 
   if (!id) {
     throw new Error('Invalid id');
   }
-  return element.getElement(`[id="${id}"]`);
+  return element.find(`[id="${id}"]`);
 }
 
 export = QW_ACT_R36;

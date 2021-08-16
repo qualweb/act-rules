@@ -190,11 +190,11 @@ class QW_ACT_R24 extends AtomicRule {
   execute(element: typeof window.qwElement): void {
     const test = new Test();
 
-    const tag = element.getElementTagName();
+    const tag = element.getTagName();
 
     if (tag === 'input') {
-      const type = element.getElementAttribute('type');
-      const disabled = element.elementHasAttribute('disabled');
+      const type = element.getAttribute('type');
+      const disabled = element.hasAttribute('disabled');
       if (disabled) {
         return;
       }
@@ -203,21 +203,21 @@ class QW_ACT_R24 extends AtomicRule {
       }
     }
     // aria-disable true
-    const ariaDisable = element.getElementAttribute('aria-disabled');
+    const ariaDisable = element.getAttribute('aria-disabled');
 
     if (ariaDisable === 'true') {
       return;
     }
 
     // sequential focus nav and has semantic role that is not widget role
-    const isFocusable = window.AccessibilityUtils.isPartOfSequentialFocusNavigation(element);
-    const widgetRole = window.AccessibilityUtils.isElementWidget(element);
+    const isFocusable = element.isPartOfSequentialFocusNavigation();
+    const widgetRole = element.isWidget();
 
     if (!isFocusable && !widgetRole) {
       return;
     }
 
-    let autoComplete = element.getElementAttribute('autocomplete');
+    let autoComplete = element.getAttribute('autocomplete');
 
     if (autoComplete) {
       autoComplete = autoComplete.trim();
@@ -265,9 +265,9 @@ class QW_ACT_R24 extends AtomicRule {
   }
 
   private isText(element: typeof window.qwElement): boolean {
-    const tag = element.getElementTagName();
+    const tag = element.getTagName();
     if (tag === 'input') {
-      const type = element.getElementAttribute('type');
+      const type = element.getAttribute('type');
       if (type === null || type === 'hidden' || type === 'text' || type === 'search') {
         return true;
       }
@@ -278,9 +278,9 @@ class QW_ACT_R24 extends AtomicRule {
   }
 
   private isMultiline(element: typeof window.qwElement): boolean {
-    const tag = element.getElementTagName();
+    const tag = element.getTagName();
     if (tag === 'input') {
-      const type = element.getElementAttribute('type');
+      const type = element.getAttribute('type');
       if (type === null || type === 'hidden') {
         return true;
       }
@@ -291,9 +291,9 @@ class QW_ACT_R24 extends AtomicRule {
   }
 
   private isPassword(element: typeof window.qwElement): boolean {
-    const tag = element.getElementTagName();
+    const tag = element.getTagName();
     if (tag === 'input') {
-      const type = element.getElementAttribute('type');
+      const type = element.getAttribute('type');
       if (type === null || type === 'hidden' || type === 'text' || type === 'search' || type === 'password') {
         return true;
       }
@@ -305,9 +305,9 @@ class QW_ACT_R24 extends AtomicRule {
   }
 
   private isURL(element: typeof window.qwElement): boolean {
-    const tag = element.getElementTagName();
+    const tag = element.getTagName();
     if (tag === 'input') {
-      const type = element.getElementAttribute('type');
+      const type = element.getAttribute('type');
       if (type === null || type === 'hidden' || type === 'text' || type === 'search' || type === 'url') {
         return true;
       }
@@ -319,9 +319,9 @@ class QW_ACT_R24 extends AtomicRule {
   }
 
   private isEmail(element: typeof window.qwElement): boolean {
-    const tag = element.getElementTagName();
+    const tag = element.getTagName();
     if (tag === 'input') {
-      const type = element.getElementAttribute('type');
+      const type = element.getAttribute('type');
       if (type === null || type === 'hidden' || type === 'text' || type === 'search' || type === 'email') {
         return true;
       }
@@ -333,9 +333,9 @@ class QW_ACT_R24 extends AtomicRule {
   }
 
   private isTel(element: typeof window.qwElement): boolean {
-    const tag = element.getElementTagName();
+    const tag = element.getTagName();
     if (tag === 'input') {
-      const type = element.getElementAttribute('type');
+      const type = element.getAttribute('type');
       if (type === null || type === 'hidden' || type === 'text' || type === 'search' || type === 'tel') {
         return true;
       }
@@ -347,9 +347,9 @@ class QW_ACT_R24 extends AtomicRule {
   }
 
   private isNumeric(element: typeof window.qwElement): boolean {
-    const tag = element.getElementTagName();
+    const tag = element.getTagName();
     if (tag === 'input') {
-      const type = element.getElementAttribute('type');
+      const type = element.getAttribute('type');
       if (type === null || type === 'hidden' || type === 'text' || type === 'search' || type === 'number') {
         return true;
       }
@@ -361,9 +361,9 @@ class QW_ACT_R24 extends AtomicRule {
   }
 
   private isMonth(element: typeof window.qwElement): boolean {
-    const tag = element.getElementTagName();
+    const tag = element.getTagName();
     if (tag === 'input') {
-      const type = element.getElementAttribute('type');
+      const type = element.getAttribute('type');
       if (type === null || type === 'hidden' || type === 'text' || type === 'search' || type === 'month') {
         return true;
       }
@@ -375,9 +375,9 @@ class QW_ACT_R24 extends AtomicRule {
   }
 
   private isDate(element: typeof window.qwElement): boolean {
-    const tag = element.getElementTagName();
+    const tag = element.getTagName();
     if (tag === 'input') {
-      const type = element.getElementAttribute('type');
+      const type = element.getAttribute('type');
       if (type === null || type === 'hidden' || type === 'text' || type === 'search' || type === 'date') {
         return true;
       }

@@ -13,15 +13,15 @@ class QW_ACT_R52 extends AtomicRule {
   @ElementExists
   @ElementIsVisible
   execute(element: typeof window.qwElement): void {
-    const track = element.getElement('track[kind="descriptions"]');
-    const duration = parseInt(element.getElementProperty('duration'));
-    const hasSoundTrack = window.DomUtils.videoElementHasAudio(element);
-    const hasPuppeteerApplicableData = duration > 0 && !hasSoundTrack;
+    const track = element.find('track[kind="descriptions"]');
+    const duration = element.getMediaDuration();
+    const hasSoundTrack = element.videoHasAudio();
+    const hasPuppeteerApplicableData = duration && duration > 0 && !hasSoundTrack;
 
     if (track) {
       const test = new Test('warning');
 
-      if (!(duration >= 0 && hasSoundTrack)) {
+      if (!(duration && duration >= 0 && hasSoundTrack)) {
         test.resultCode = 'W1';
         test.addElement(element);
         super.addTestResult(test);

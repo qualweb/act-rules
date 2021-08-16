@@ -17,13 +17,13 @@ class QW_ACT_R74 extends AtomicRule {
     const test = new Test();
 
     let hasLinks = false;
-    const links = window.qwPage.getElements('a');
+    const links = window.qwPage.findAll('a');
     if (links) {
       const host = location.hostname;
       const linksWithAnchors = new Array<typeof window.qwElement>();
       for (const link of links) {
-        if (link.elementHasAttribute('href')) {
-          const href = link.getElementAttribute('href')?.trim();
+        if (link.hasAttribute('href')) {
+          const href = link.getAttribute('href')?.trim();
           if (href && this.checkDestination(href)) {
             linksWithAnchors.push(link);
           } else if (href && (href.startsWith('/') || href.startsWith('.') || href.startsWith(host))) {
@@ -35,10 +35,10 @@ class QW_ACT_R74 extends AtomicRule {
       if (hasLinks) {
         let nSkipLinks = 0;
         for (const anchor of linksWithAnchors) {
-          const href = anchor.getElementAttribute('href')?.trim();
+          const href = anchor.getAttribute('href')?.trim();
           if (href) {
             const id = href.split('#')[1];
-            if (window.qwPage.getElementByID(id)) {
+            if (window.qwPage.getElementById(id)) {
               nSkipLinks++;
             }
           }

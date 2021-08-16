@@ -15,15 +15,15 @@ class QW_ACT_R21 extends AtomicRule {
   @ElementExists
   @ElementIsNotHidden
   execute(element: typeof window.qwElement): void {
-    const elementsToEvaluate = element.getElements('svg *');
+    const elementsToEvaluate = element.findAll('svg *');
     elementsToEvaluate.push(element);
 
     for (const elem of elementsToEvaluate ?? []) {
       const test = new Test();
 
-      const role = elem.getElementAttribute('role');
+      const role = elem.getAttribute('role');
       if (role && this.roleList.includes(role)) {
-        const accessibleName = window.AccessibilityUtils.getAccessibleNameSVG(elem);
+        const accessibleName = elem.getAccessibleNameSVG();
         if (accessibleName && accessibleName.trim() !== '') {
           test.verdict = 'passed';
           test.resultCode = 'P1';

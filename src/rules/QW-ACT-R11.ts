@@ -19,7 +19,7 @@ class QW_ACT_R11 extends AtomicRule {
   @ElementIsInAccessibilityTree
   @ElementHasAttributeRole('button')
   execute(element: typeof window.qwElement): void {
-    const accessibleName = window.AccessibilityUtils.getAccessibleName(element);
+    const accessibleName = element.getAccessibleName();
 
     const test = new Test();
 

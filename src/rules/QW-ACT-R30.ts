@@ -23,9 +23,9 @@ class QW_ACT_R30 extends AtomicRule {
   execute(element: typeof window.qwElement): void {
     const test = new Test();
 
-    const accessibleName = window.AccessibilityUtils.getAccessibleName(element);
-    const elementText = window.DomUtils.getTrimmedText(element);
-    const hasTextNode = element.elementHasTextNode();
+    const accessibleName = element.getAccessibleName();
+    const elementText = element.getText()?.trim() || '';
+    const hasTextNode = element.hasTextNode();
     const isIconValue = this.isIcon(elementText, accessibleName, element);
 
     if (accessibleName === undefined) {
@@ -54,7 +54,7 @@ class QW_ACT_R30 extends AtomicRule {
   //      let isIconValue = this.isIcon(elementText,accessibleName,element);
   private isIcon(elementText: string, accessibleName: string | undefined, element: typeof window.qwElement): boolean {
     const iconMap = ['i', 'x'];
-    const fontStyle = element.getElementStyleProperty('font-family', null);
+    const fontStyle = element.getComputedStyle('font-family', null);
     return !!accessibleName && (iconMap.includes(elementText.toLowerCase()) || fontStyle.includes('Material Icons'));
   }
 

@@ -13,13 +13,13 @@ class QW_ACT_R10 extends AtomicRule {
   @ElementExists
   @isInMainContext
   execute(): void {
-    const iframes = window.qwPage.getElements('iframe');
+    const iframes = window.qwPage.findAll('iframe');
     const accessibleNames = new Array<string>();
 
     // add iframe contents
     for (const link of iframes ?? []) {
-      if (window.AccessibilityUtils.isElementInAT(link)) {
-        const aName = window.AccessibilityUtils.getAccessibleName(link);
+      if (link.isInTheAccessibilityTree()) {
+        const aName = link.getAccessibleName();
         if (aName) {
           accessibleNames.push(aName);
         }

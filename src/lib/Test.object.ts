@@ -16,11 +16,11 @@ class Test implements ACTRuleResult {
   }
 
   public addElement(element: typeof window.qwElement, withText = true, fullElement = false, aName?: boolean): void {
-    const htmlCode = element.getElementHtmlCode(withText, fullElement);
-    const pointer = element.getElementSelector();
+    const htmlCode = element.toString(withText, fullElement);
+    const pointer = element.getSelector();
     let accessibleName: string | undefined;
     if (aName) {
-      accessibleName = window.AccessibilityUtils.getAccessibleName(element);
+      accessibleName = element.getAccessibleName();
     }
     this.elements.push({ htmlCode, pointer, accessibleName });
   }

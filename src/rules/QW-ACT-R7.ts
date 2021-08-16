@@ -1,6 +1,6 @@
 import { ACTRule } from '@qualweb/act-rules';
 import { Translate } from '@qualweb/locale';
-import { MediaProperties, CSSProperty, MediaProperty } from '@qualweb/qw-element';
+import { MediaProperties, CSSProperty, MediaProperty } from '@qualweb/qw-page';
 import AtomicRule from '../lib/AtomicRule.object';
 import { ACTRuleDecorator, ElementExists, ElementIsVisible, ElementHasCSSRules } from '../lib/decorator';
 import Test from '../lib/Test.object';

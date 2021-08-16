@@ -14,7 +14,7 @@ class QW_ACT_R2 extends AtomicRule {
   @IsHTMLDocument
   @isInMainContext
   execute(element: typeof window.qwElement): void {
-    const lang = element.getElementAttribute('lang');
+    const lang = element.getAttribute('lang');
 
     const test = new Test();
 

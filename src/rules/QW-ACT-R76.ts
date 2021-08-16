@@ -29,55 +29,55 @@ class QW_ACT_R76 extends AtomicRule {
 
     const test = new Test();
 
-    const visible = window.DomUtils.isElementVisible(element);
+    const visible = element.isVisible();
 
     if (!visible) {
       return;
     }
 
     const hasTextNode = element.hasTextNode();
-    const elementText = element.getElementOwnText();
+    const elementText = element.getOwnText();
 
-    if (!hasTextNode && elementText.trim() === '') {
+    if (!hasTextNode && (!elementText || elementText.trim() === '')) {
       return;
     }
 
-    const isHTML = element.isElementHTMLElement();
+    const isHTML = element.isHTMLElement();
     if (!isHTML) {
       return;
     }
 
-    const isWidget = window.AccessibilityUtils.isElementWidget(element);
+    const isWidget = element.isWidget();
     if (isWidget) {
       return;
     }
 
-    const elementSelectors = element.getElementSelector();
+    const elementSelectors = element.getSelector();
 
     for (const disableWidget of disabledWidgets || []) {
-      const selectors = window.AccessibilityUtils.getAccessibleNameSelector(disableWidget);
+      const selectors = disableWidget.getAccessibleNameSelector();
       if (disableWidget && selectors && selectors.includes(elementSelectors)) {
         return;
       }
     }
 
-    const role = window.AccessibilityUtils.getElementRole(element);
+    const role = element.getRole();
     if (role === 'group') {
-      const disable = element.getElementAttribute('disabled') !== null;
-      const ariaDisable = element.getElementAttribute('aria-disabled') !== null;
+      const disable = element.getAttribute('disabled') !== null;
+      const ariaDisable = element.getAttribute('aria-disabled') !== null;
       if (disable || ariaDisable) {
         return;
       }
     }
 
-    const fgColor = element.getElementStyleProperty('color', null);
+    const fgColor = element.getComputedStyle('color', null);
     let bgColor = this.getBackground(element);
-    const opacity = parseFloat(element.getElementStyleProperty('opacity', null));
-    const fontSize = element.getElementStyleProperty('font-size', null);
-    const fontWeight = element.getElementStyleProperty('font-weight', null);
-    const fontFamily = element.getElementStyleProperty('font-family', null);
-    const fontStyle = element.getElementStyleProperty('font-style', null);
-    const textShadow = element.getElementStyleProperty('text-shadow', null);
+    const opacity = parseFloat(element.getComputedStyle('opacity', null));
+    const fontSize = element.getComputedStyle('font-size', null);
+    const fontWeight = element.getComputedStyle('font-weight', null);
+    const fontFamily = element.getComputedStyle('font-family', null);
+    const fontStyle = element.getComputedStyle('font-style', null);
+    const textShadow = element.getComputedStyle('text-shadow', null);
 
     if (textShadow.trim() !== 'none') {
       const properties = textShadow.trim().split(' ');
@@ -116,7 +116,7 @@ class QW_ACT_R76 extends AtomicRule {
     const regexGradient = /((\w-?)*gradient.*)/gm;
     let regexGradientMatches = bgColor.match(regexGradient);
     if (regexGradientMatches) {
-      if (this.isHumanLanguage(elementText)) {
+      if (elementText && this.isHumanLanguage(elementText)) {
         const parsedGradientString = regexGradientMatches[0];
         this.evaluateGradient(
           test,
@@ -146,7 +146,7 @@ class QW_ACT_R76 extends AtomicRule {
         parsedBG === undefined ||
         (parsedBG.red === 0 && parsedBG.green === 0 && parsedBG.blue === 0 && parsedBG.alpha === 0)
       ) {
-        const parent = elementAux.getElementParent();
+        const parent = elementAux.getParent();
         if (parent) {
           bgColor = this.getBackground(parent);
           if (this.isImage(bgColor)) {
@@ -172,14 +172,14 @@ class QW_ACT_R76 extends AtomicRule {
                   fontWeight,
                   fontStyle,
                   fontFamily,
-                  elementText
+                  elementText ?? ''
                 )
               ) {
                 return;
               }
             } else {
-              opacityAUX = parseFloat(parent.getElementStyleProperty('opacity', null));
-              parsedBG = this.parseRGBString(parent.getElementStyleProperty('background', null), opacityAUX);
+              opacityAUX = parseFloat(parent.getComputedStyle('opacity', null));
+              parsedBG = this.parseRGBString(parent.getComputedStyle('background', null), opacityAUX);
               elementAux = parent;
             }
           }
@@ -199,7 +199,7 @@ class QW_ACT_R76 extends AtomicRule {
       const parsedFG = this.parseRGBString(fgColor, opacity);
 
       if (!this.equals(parsedBG, parsedFG)) {
-        if (this.isHumanLanguage(elementText)) {
+        if (elementText && this.isHumanLanguage(elementText)) {
           const contrastRatio = this.getContrast(parsedBG, parsedFG);
           const isValid = this.hasValidContrastRatio(contrastRatio, fontSize, this.isBold(fontWeight));
           if (isValid) {
@@ -227,11 +227,11 @@ class QW_ACT_R76 extends AtomicRule {
   }
 
   getBackground(element: typeof window.qwElement): string {
-    const backgroundImage = element.getElementStyleProperty('background-image', null);
+    const backgroundImage = element.getComputedStyle('background-image', null);
     if (backgroundImage === 'none') {
-      let bg = element.getElementStyleProperty('background', null);
+      let bg = element.getComputedStyle('background', null);
       if (bg === '') {
-        bg = element.getElementStyleProperty('background-color', null);
+        bg = element.getComputedStyle('background-color', null);
       }
 
       return bg;
@@ -275,7 +275,7 @@ class QW_ACT_R76 extends AtomicRule {
           elementText
         );
         if (textSize !== -1) {
-          const elementWidth = element.getElementStyleProperty('width', null);
+          const elementWidth = element.getComputedStyle('width', null);
           const lastCharRatio = textSize / parseInt(elementWidth.replace('px', ''));
           const lastCharBgColor = this.getColorInGradient(colors[0], colors[colors.length - 1], lastCharRatio);
           contrastRatio = this.getContrast(colors[0], this.parseRGBString(fgColor, opacity));

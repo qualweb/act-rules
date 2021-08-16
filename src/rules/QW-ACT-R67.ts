@@ -14,11 +14,11 @@ class QW_ACT_R67 extends AtomicRule {
   @ElementIsVisible
   execute(element: typeof window.qwElement): void {
     if (element.hasCSSProperty('letter-spacing')) {
-      const styleAttribute = element.getElementAttribute('style');
+      const styleAttribute = element.getAttribute('style');
       const declaredLetterSpacing = this.parseStyle(styleAttribute);
       const computedRawLetterSpacing = element.getCSSProperty('letter-spacing');
-      const computedLetterSpacing = element.getElementStyleProperty('letter-spacing', null);
-      const fontSize = element.getElementStyleProperty('font-size', null);
+      const computedLetterSpacing = element.getComputedStyle('letter-spacing', null);
+      const fontSize = element.getComputedStyle('font-size', null);
 
       const test = new Test();
 
@@ -55,7 +55,7 @@ class QW_ACT_R67 extends AtomicRule {
 
   private isImportant(cssValue: any, element: typeof window.qwElement): boolean {
     if (cssValue.value === 'inherit' || cssValue.value === 'unset') {
-      const parent = this.findParentWithCSSProperty(element.getElementParent());
+      const parent = this.findParentWithCSSProperty(element.getParent());
       if (parent === null) return false;
       return this.isImportant(parent?.getCSSProperty('letter-spacing'), parent);
     }
@@ -77,7 +77,7 @@ class QW_ACT_R67 extends AtomicRule {
       if (element?.getCSSProperty('letter-spacing')) {
         return element;
       }
-      element = element.getElementParent();
+      element = element.getParent();
     }
     return null;
   }

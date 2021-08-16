@@ -13,7 +13,7 @@ abstract class CompositeRule extends Rule {
   public conjunction(element: typeof window.qwElement, rules: Array<ACTRule>): void {
     const test = new Test();
 
-    const selector = element.getElementSelector();
+    const selector = element.getSelector();
     const results = this.getAtomicRuleResultPerVerdict(selector, rules);
     if (results['failed']) {
       test.verdict = 'failed';
@@ -36,7 +36,7 @@ abstract class CompositeRule extends Rule {
   public disjunction(element: typeof window.qwElement, rules: Array<ACTRule>): void {
     const test = new Test();
 
-    const selector = element.getElementSelector();
+    const selector = element.getSelector();
     const results = this.getAtomicRuleResultPerVerdict(selector, rules);
     if (results['passed']) {
       test.verdict = 'passed';

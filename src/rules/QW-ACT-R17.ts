@@ -15,12 +15,12 @@ class QW_ACT_R17 extends AtomicRule {
   execute(element: typeof window.qwElement): void {
     const test = new Test();
 
-    const name = element.getElementTagName();
-    const elementInAT = window.AccessibilityUtils.isElementInAT(element);
-    const role = window.AccessibilityUtils.getElementRole(element);
-    const hidden = window.DomUtils.isElementHidden(element);
+    const name = element.getTagName();
+    const elementInAT = element.isInTheAccessibilityTree();
+    const role = element.getRole();
+    const hidden = element.isHidden();
 
-    const alt = element.getElementAttribute('alt');
+    const alt = element.getAttribute('alt');
 
     if (name === 'img' && !hidden && (alt === '' || role === 'presentation' || role === 'none')) {
       test.verdict = 'passed';
@@ -29,7 +29,7 @@ class QW_ACT_R17 extends AtomicRule {
       test.addElement(element);
       super.addTestResult(test);
     } else if (elementInAT) {
-      const accessibleName = window.AccessibilityUtils.getAccessibleName(element);
+      const accessibleName = element.getAccessibleName();
       if (accessibleName && accessibleName.trim() !== '') {
         test.verdict = 'passed';
         test.resultCode = 'P2';

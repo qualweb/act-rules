@@ -16,12 +16,12 @@ class QW_ACT_R64 extends AtomicRule {
     const test = new Test();
 
     let hasLinks = false;
-    const links = element.getElements('a');
+    const links = element.findAll('a');
     if (links) {
       const host = location.hostname;
       for (const link of links) {
-        if (link.elementHasAttribute('href')) {
-          const href = link.getElementAttribute('href')?.trim();
+        if (link.hasAttribute('href')) {
+          const href = link.getAttribute('href')?.trim();
           if (
             href &&
             !this.checkDestination(href) &&

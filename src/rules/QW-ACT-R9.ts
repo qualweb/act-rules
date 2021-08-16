@@ -13,7 +13,7 @@ class QW_ACT_R9 extends AtomicRule {
   @ElementExists
   @isInMainContext
   execute(): void {
-    const links = window.qwPage.getElements('a[href], [role="link"]');
+    const links = window.qwPage.findAll('a[href], [role="link"]');
 
     const accessibleNames = new Array<string>();
     const hrefList = new Array<string | null>();
@@ -21,12 +21,12 @@ class QW_ACT_R9 extends AtomicRule {
 
     for (const link of links ?? []) {
       let aName;
-      if (window.DomUtils.isElementADescendantOf(link, ['svg'], [])) {
-        aName = window.AccessibilityUtils.getAccessibleNameSVG(link);
-      } else if (window.AccessibilityUtils.isElementInAT(link)) {
-        aName = window.AccessibilityUtils.getAccessibleName(link);
+      if (link.isDescendantOf(['svg'], [])) {
+        aName = link.getAccessibleNameSVG();
+      } else if (link.isInTheAccessibilityTree()) {
+        aName = link.getAccessibleName();
       }
-      const href = link.getElementAttribute('href');
+      const href = link.getAttribute('href');
 
       if (aName) {
         hrefList.push(href);

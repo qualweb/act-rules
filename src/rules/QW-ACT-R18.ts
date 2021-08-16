@@ -17,11 +17,11 @@ class QW_ACT_R18 extends AtomicRule {
   execute(element: typeof window.qwElement): void {
     const test = new Test();
 
-    const id = element.getElementAttribute('id');
+    const id = element.getAttribute('id');
 
     if (id && !this.idMap.get(id)) {
       try {
-        const elementsWithSameId = window.qwPage.getElements(`[id="${id}"]`, element);
+        const elementsWithSameId = window.qwPage.findAll(`[id="${id}"]`, element);
 
         if (elementsWithSameId.length > 1) {
           test.verdict = 'failed';

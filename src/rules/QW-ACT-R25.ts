@@ -22,21 +22,21 @@ class QW_ACT_R25 extends AtomicRule {
     ariaSelector = ariaSelector.substring(0, ariaSelector.length - 2);
 
     // get all elements that are using aria attributes
-    const elementsWithAriaAttribs = element.getElements(ariaSelector);
+    const elementsWithAriaAttribs = element.findAll(ariaSelector);
 
     const keys = Object.keys(ariaAttributesRoles);
     for (const elem of elementsWithAriaAttribs ?? []) {
-      const isInAT = window.AccessibilityUtils.isElementInAT(elem);
+      const isInAT = elem.isInTheAccessibilityTree();
 
       //if is in the accessibility tree
       if (isInAT) {
-        const attrs = elem.getElementAttributesName();
+        const attrs = elem.getAttributeNames();
 
         for (const attr of attrs ?? []) {
           if (attr && keys.includes(attr)) {
             const test = new Test();
 
-            const role = window.AccessibilityUtils.getElementRole(elem);
+            const role = elem.getRole();
 
             // if valid aria attribute
             if (

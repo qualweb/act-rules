@@ -16,11 +16,11 @@ class QW_ACT_R69 extends AtomicRule {
     const test = new Test();
 
     if (element.hasCSSProperty('word-spacing')) {
-      const styleAttribute = element.getElementAttribute('style');
+      const styleAttribute = element.getAttribute('style');
       const declaredWordSpacing = this.parseStyle(styleAttribute);
       const computedRawWordSpacing = element.getCSSProperty('word-spacing');
-      const computedWordSpacing = element.getElementStyleProperty('word-spacing', null);
-      const fontSize = element.getElementStyleProperty('font-size', null);
+      const computedWordSpacing = element.getComputedStyle('word-spacing', null);
+      const fontSize = element.getComputedStyle('font-size', null);
 
       if (!this.isImportant(computedRawWordSpacing, element)) {
         test.verdict = 'passed';
@@ -55,7 +55,7 @@ class QW_ACT_R69 extends AtomicRule {
 
   private isImportant(cssValue: any, element: typeof window.qwElement): boolean {
     if (cssValue.value === 'inherit' || cssValue.value === 'unset') {
-      const parent = this.findParentWithCSSProperty(element.getElementParent());
+      const parent = this.findParentWithCSSProperty(element.getParent());
       if (parent === null) return false;
       return this.isImportant(parent?.getCSSProperty('word-spacing'), parent);
     }
@@ -77,7 +77,7 @@ class QW_ACT_R69 extends AtomicRule {
       if (element?.getCSSProperty('word-spacing')) {
         return element;
       }
-      element = element.getElementParent();
+      element = element.getParent();
     }
     return null;
   }

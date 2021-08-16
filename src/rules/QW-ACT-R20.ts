@@ -16,7 +16,7 @@ class QW_ACT_R20 extends AtomicRule {
   execute(element: typeof window.qwElement): void {
     const test = new Test();
 
-    if (window.AccessibilityUtils.elementHasValidRole(element)) {
+    if (element.hasValidRole()) {
       test.verdict = 'passed';
       test.resultCode = 'P1';
     } else {

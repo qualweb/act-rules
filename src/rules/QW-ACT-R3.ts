@@ -25,8 +25,8 @@ class QW_ACT_R3 extends AtomicRule {
   @IsLangSubTagValid('xml:lang')
   @isInMainContext
   execute(element: typeof window.qwElement): void {
-    const lang = <string>element.getElementAttribute('lang');
-    const xmlLang = <string>element.getElementAttribute('xml:lang');
+    const lang = <string>element.getAttribute('lang');
+    const xmlLang = <string>element.getAttribute('xml:lang');
 
     const primaryLang = lang.split('-')[0];
     const primaryXmlLang = xmlLang.split('-')[0];

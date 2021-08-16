@@ -16,7 +16,7 @@ class QW_ACT_R14 extends AtomicRule {
   execute(element: typeof window.qwElement): void {
     const test = new Test();
 
-    const content = <string>element.getElementAttribute('content');
+    const content = <string>element.getAttribute('content');
     let maximumScale = '';
     let userScalable = '';
     const contentValues = content.split(',');

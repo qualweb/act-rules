@@ -54,7 +54,7 @@ function ElementIsHTMLElement(_target: any, _propertyKey: string, descriptor: Pr
   const method = descriptor.value;
   descriptor.value = function () {
     const element = <typeof window.qwElement>arguments[0];
-    if (element.isElementHTMLElement()) {
+    if (element.isHTMLElement()) {
       return method.apply(this, arguments);
     }
   };
@@ -63,7 +63,7 @@ function ElementIsHTMLElement(_target: any, _propertyKey: string, descriptor: Pr
 function ElementHasAttributes(_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
   const method = descriptor.value;
   descriptor.value = function () {
-    const hasAttributes = (<typeof window.qwElement>arguments[0]).elementHasAttributes();
+    const hasAttributes = (<typeof window.qwElement>arguments[0]).hasAttributes();
     if (hasAttributes) {
       return method.apply(this, arguments);
     }
@@ -74,7 +74,7 @@ function ElementHasAttribute(attribute: string) {
   return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
     const method = descriptor.value;
     descriptor.value = function () {
-      const attr = (<typeof window.qwElement>arguments[0]).elementHasAttribute(attribute);
+      const attr = (<typeof window.qwElement>arguments[0]).hasAttribute(attribute);
       if (attr) {
         return method.apply(this, arguments);
       }
@@ -86,7 +86,7 @@ function ElementHasNonEmptyAttribute(attribute: string) {
   return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
     const method = descriptor.value;
     descriptor.value = function () {
-      const attr = (<typeof window.qwElement>arguments[0]).getElementAttribute(attribute);
+      const attr = (<typeof window.qwElement>arguments[0]).getAttribute(attribute);
       if (attr && attr.trim()) {
         return method.apply(this, arguments);
       }
@@ -98,7 +98,7 @@ function ElementHasAttributeRole(role: string) {
   return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
     const method = descriptor.value;
     descriptor.value = function () {
-      const _role = window.AccessibilityUtils.getElementRole(<typeof window.qwElement>arguments[0]);
+      const _role = (<typeof window.qwElement>arguments[0]).getRole();
       if (!_role || _role === role) {
         return method.apply(this, arguments);
       }
@@ -110,7 +110,7 @@ function ElementHasAttributeValue(attribute: string, value: string) {
   return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
     const method = descriptor.value;
     descriptor.value = function () {
-      const attr = (<typeof window.qwElement>arguments[0]).getElementAttribute(attribute);
+      const attr = (<typeof window.qwElement>arguments[0]).getAttribute(attribute);
       if (attr && attr === value) {
         return method.apply(this, arguments);
       }
@@ -122,9 +122,9 @@ function IfElementHasTagNameMustHaveAttributeRole(tagName: string, role: string)
   return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
     const method = descriptor.value;
     descriptor.value = function () {
-      const _tagName = (<typeof window.qwElement>arguments[0]).getElementTagName();
+      const _tagName = (<typeof window.qwElement>arguments[0]).getTagName();
       if (_tagName === tagName) {
-        const _role = (<typeof window.qwElement>arguments[0]).getElementAttribute('role'); // window.AccessibilityUtils.getElementRole(arguments[0], arguments[1]);
+        const _role = (<typeof window.qwElement>arguments[0]).getAttribute('role'); // window.AccessibilityUtils.getElementRole(arguments[0], arguments[1]);
         if (!_role || _role === role) {
           return method.apply(this, arguments);
         }
@@ -139,7 +139,7 @@ function ElementHasText(_target: any, _propertyKey: string, descriptor: Property
   const method = descriptor.value;
   descriptor.value = function () {
     const element = <typeof window.qwElement>arguments[0];
-    if (window.DomUtils.getTrimmedText(element) !== '') {
+    if (element.getText()?.trim() !== '') {
       return method.apply(this, arguments);
     }
   };
@@ -149,7 +149,7 @@ function ElementHasTextNode(_target: any, _propertyKey: string, descriptor: Prop
   const method = descriptor.value;
   descriptor.value = function () {
     const element = <typeof window.qwElement>arguments[0];
-    if (element.elementHasTextNode()) {
+    if (element.hasTextNode()) {
       return method.apply(this, arguments);
     }
   };
@@ -158,7 +158,7 @@ function ElementHasTextNode(_target: any, _propertyKey: string, descriptor: Prop
 function ElementIsInAccessibilityTree(_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
   const method = descriptor.value;
   descriptor.value = function () {
-    const isInAT = window.AccessibilityUtils.isElementInAT(<typeof window.qwElement>arguments[0]);
+    const isInAT = (<typeof window.qwElement>arguments[0]).isInTheAccessibilityTree();
     if (isInAT) {
       return method.apply(this, arguments);
     }
@@ -168,7 +168,7 @@ function ElementIsInAccessibilityTree(_target: any, _propertyKey: string, descri
 function ElementHasNegativeTabIndex(_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
   const method = descriptor.value;
   descriptor.value = function () {
-    const tabindex = (<typeof window.qwElement>arguments[0]).getElementAttribute('tabindex');
+    const tabindex = (<typeof window.qwElement>arguments[0]).getAttribute('tabindex');
     if (tabindex && parseInt(tabindex) <= -1) {
       return method.apply(this, arguments);
     }
@@ -179,11 +179,8 @@ function ElementIsVisibleOrInAccessibilityTree(_target: any, _propertyKey: strin
   const method = descriptor.value;
   descriptor.value = function () {
     const page = <typeof window.qwPage>window.qwPage;
-    const elements = page.getElements('*').filter((element: typeof window.qwElement) => {
-      return (
-        element.hasTextNode() &&
-        (window.DomUtils.isElementVisible(element) || window.AccessibilityUtils.isElementInAT(element))
-      );
+    const elements = page.findAll('*').filter((element: typeof window.qwElement) => {
+      return element.hasTextNode() && (element.isVisible() || element.isInTheAccessibilityTree());
     });
     if (elements.length > 0) {
       return method.apply(this, arguments);
@@ -194,7 +191,7 @@ function ElementIsVisibleOrInAccessibilityTree(_target: any, _propertyKey: strin
 function ElementIsNotHidden(_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
   const method = descriptor.value;
   descriptor.value = function () {
-    const notHidden = !window.DomUtils.isElementHidden(<typeof window.qwElement>arguments[0]);
+    const notHidden = !(<typeof window.qwElement>arguments[0]).isHidden();
     if (notHidden) {
       return method.apply(this, arguments);
     }
@@ -208,9 +205,9 @@ function ElementSrcAttributeFilenameEqualsAccessibleName(
 ) {
   const method = descriptor.value;
   descriptor.value = function () {
-    const src = (<typeof window.qwElement>arguments[0]).getElementAttribute('src');
-    const srcSet = (<typeof window.qwElement>arguments[0]).getElementAttribute('srcset');
-    const parent = (<typeof window.qwElement>arguments[0]).getElementParent();
+    const src = (<typeof window.qwElement>arguments[0]).getAttribute('src');
+    const srcSet = (<typeof window.qwElement>arguments[0]).getAttribute('srcset');
+    const parent = (<typeof window.qwElement>arguments[0]).getParent();
     let filenameWithExtension = new Array<string>();
     if (src) {
       const filePath = src.split('/');
@@ -225,11 +222,11 @@ function ElementSrcAttributeFilenameEqualsAccessibleName(
       }
     }
     if (parent) {
-      const parentTag = parent.getElementTagName();
+      const parentTag = parent.getTagName();
       if (parentTag === 'picture') {
-        const sourceElements = parent.getElements('source');
+        const sourceElements = parent.findAll('source');
         for (const sourceElement of sourceElements) {
-          const src = sourceElement.getElementAttribute('srcset');
+          const src = sourceElement.getAttribute('srcset');
           if (src) {
             const filePath = src.split('/');
             filenameWithExtension.push(filePath[filePath.length - 1].trim().toLowerCase());
@@ -238,7 +235,7 @@ function ElementSrcAttributeFilenameEqualsAccessibleName(
       }
     }
 
-    const accessibleName = window.AccessibilityUtils.getAccessibleName(<typeof window.qwElement>arguments[0]);
+    const accessibleName = (<typeof window.qwElement>arguments[0]).getAccessibleName();
 
     if (accessibleName && filenameWithExtension && filenameWithExtension.includes(accessibleName.toLowerCase())) {
       return method.apply(this, arguments);
@@ -249,7 +246,7 @@ function ElementSrcAttributeFilenameEqualsAccessibleName(
 function isInMainContext(_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
   const method = descriptor.value;
   descriptor.value = function () {
-    const differentContext = (<typeof window.qwElement>arguments[0]).getElementAttribute('_documentSelector');
+    const differentContext = (<typeof window.qwElement>arguments[0]).getAttribute('_documentSelector');
     if (!differentContext || !differentContext.includes('>')) {
       return method.apply(this, arguments);
     }
@@ -259,7 +256,7 @@ function isInMainContext(_target: any, _propertyKey: string, descriptor: Propert
 function ElementIsVisible(_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
   const method = descriptor.value;
   descriptor.value = function () {
-    const isVisible = window.DomUtils.isElementVisible(<typeof window.qwElement>arguments[0]);
+    const isVisible = (<typeof window.qwElement>arguments[0]).isVisible();
     if (isVisible) {
       return method.apply(this, arguments);
     }
@@ -270,7 +267,7 @@ function ElementIsNot(names: string[]) {
   return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
     const method = descriptor.value;
     descriptor.value = function () {
-      const name = (<typeof window.qwElement>arguments[0]).getElementTagName();
+      const name = (<typeof window.qwElement>arguments[0]).getTagName();
       if (name && !names.includes(name)) {
         return method.apply(this, arguments);
       }
@@ -282,7 +279,7 @@ function ElementHasOneOfTheFollowingRoles(roles: string[]) {
   return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
     const method = descriptor.value;
     descriptor.value = function () {
-      const role = window.AccessibilityUtils.getElementRole(<typeof window.qwElement>arguments[0]);
+      const role = (<typeof window.qwElement>arguments[0]).getRole();
       if (!!role && roles.includes(role)) {
         return method.apply(this, arguments);
       }
@@ -293,7 +290,7 @@ function ElementHasOneOfTheFollowingRoles(roles: string[]) {
 function ElementIsWidget(_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
   const method = descriptor.value;
   descriptor.value = function () {
-    const isWidget = window.AccessibilityUtils.isElementWidget(<typeof window.qwElement>arguments[0]);
+    const isWidget = (<typeof window.qwElement>arguments[0]).isWidget();
     if (isWidget) {
       return method.apply(this, arguments);
     }
@@ -303,7 +300,7 @@ function ElementIsWidget(_target: any, _propertyKey: string, descriptor: Propert
 function ElementIsNotWidget(_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
   const method = descriptor.value;
   descriptor.value = function () {
-    const isWidget = window.AccessibilityUtils.isElementWidget(<typeof window.qwElement>arguments[0]);
+    const isWidget = (<typeof window.qwElement>arguments[0]).isWidget();
     if (!isWidget) {
       return method.apply(this, arguments);
     }
@@ -313,9 +310,7 @@ function ElementIsNotWidget(_target: any, _propertyKey: string, descriptor: Prop
 function ElementAllowsNameFromContent(_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
   const method = descriptor.value;
   descriptor.value = function () {
-    const supportsNameFromContent = window.AccessibilityUtils.allowsNameFromContent(
-      <typeof window.qwElement>arguments[0]
-    );
+    const supportsNameFromContent = (<typeof window.qwElement>arguments[0]).allowsNameFromContent();
     if (supportsNameFromContent) {
       return method.apply(this, arguments);
     }
@@ -326,8 +321,8 @@ function IsHTMLDocument(_target: any, _propertyKey: string, descriptor: Property
   const method = descriptor.value;
   descriptor.value = function () {
     let IsNonHTMLDocument = false;
-    const htmlElement = window.qwPage.getElement('html');
-    if (htmlElement) IsNonHTMLDocument = htmlElement.getElementAttribute('nonHTMLPage') === 'true';
+    const htmlElement = window.qwPage.find('html');
+    if (htmlElement) IsNonHTMLDocument = htmlElement.getAttribute('nonHTMLPage') === 'true';
     if (!IsNonHTMLDocument) {
       return method.apply(this, arguments);
     }
@@ -348,7 +343,7 @@ function IsLangSubTagValid(attribute: string) {
   return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
     const method = descriptor.value;
     descriptor.value = function () {
-      const attr = (<typeof window.qwElement>arguments[0]).getElementAttribute(attribute);
+      const attr = (<typeof window.qwElement>arguments[0]).getAttribute(attribute);
       if (attr && isSubTagValid(attr.split('-')[0])) {
         return method.apply(this, arguments);
       }
@@ -365,8 +360,8 @@ function ElementIsImage(_target: any, _propertyKey: string, descriptor: Property
   const method = descriptor.value;
   descriptor.value = function () {
     const element = <typeof window.qwElement>arguments[0];
-    const role = window.AccessibilityUtils.getElementRole(element);
-    if (element.getElementTagName() === 'img' || role === 'img') {
+    const role = element.getRole();
+    if (element.getTagName() === 'img' || role === 'img') {
       return method.apply(this, arguments);
     }
   };

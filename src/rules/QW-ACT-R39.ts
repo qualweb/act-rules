@@ -25,20 +25,20 @@ class QW_ACT_R39 extends AtomicRule {
   execute(element: typeof window.qwElement): void {
     const ancestorTableOrGrid = getFirstAncestorElementByNameOrRoles(element, [], ['grid', 'table']);
     if (ancestorTableOrGrid !== null) {
-      const isAncestorTableOrGridInAT = window.AccessibilityUtils.isElementInAT(ancestorTableOrGrid);
+      const isAncestorTableOrGridInAT = ancestorTableOrGrid.isInTheAccessibilityTree();
       if (isAncestorTableOrGridInAT) {
-        const rowElements = ancestorTableOrGrid.getElements('tr, [role="row"]');
-        const elementParent = element.getElementParent();
-        const colspan = element.getElementAttribute('colspan');
+        const rowElements = ancestorTableOrGrid.findAll('tr, [role="row"]');
+        const elementParent = element.getParent();
+        const colspan = element.getAttribute('colspan');
         const headerElementIndex = getElementIndexOfParentChildren(element);
-        const headerElementId = element.getElementAttribute('id');
+        const headerElementId = element.getAttribute('id');
 
         let found = false;
         let index = 0;
         while (!found && index < rowElements.length) {
-          if (elementParent && rowElements[index].getElementSelector() !== elementParent.getElementSelector()) {
+          if (elementParent && rowElements[index].getSelector() !== elementParent.getSelector()) {
             // all children of row
-            const rowChildrenElements = rowElements[index].getElementChildren();
+            const rowChildrenElements = rowElements[index].getChildren();
 
             // row element with same index as header
 
@@ -53,10 +53,8 @@ class QW_ACT_R39 extends AtomicRule {
                 }
               }
               for (const cellIndexElement of cellIndexElements ?? []) {
-                const cellIndexElementRole = cellIndexElement
-                  ? window.AccessibilityUtils.getElementRole(cellIndexElement)
-                  : null;
-                const cellHeadersAttribute = cellIndexElement ? cellIndexElement.getElementAttribute('headers') : null;
+                const cellIndexElementRole = cellIndexElement ? cellIndexElement.getRole() : null;
+                const cellHeadersAttribute = cellIndexElement ? cellIndexElement.getAttribute('headers') : null;
 
                 // if it does not have a headers attribute, it's found but if it has a headers attribute, we need to verify if it includes headerElement's id
                 found =
@@ -72,13 +70,13 @@ class QW_ACT_R39 extends AtomicRule {
               // if there is not an element in the same index as header, we need to check all row children...
               for (const cellElement of rowChildrenElements) {
                 if (!found) {
-                  const cellElementRole = window.AccessibilityUtils.getElementRole(cellElement);
+                  const cellElementRole = cellElement.getRole();
                   // verifying if it has a colspan attribute and it matches headerElement's index
-                  const cellColspanAttribute = cellElement.getElementAttribute('colspan');
+                  const cellColspanAttribute = cellElement.getAttribute('colspan');
                   const cellElementIndex = getElementIndexOfParentChildren(cellElement);
 
                   // and verifying if it has a headers attribute that includes headerElement's id
-                  const headers = cellElement.getElementAttribute('headers');
+                  const headers = cellElement.getAttribute('headers');
                   found =
                     !!cellElementRole &&
                     this.cellRoles.includes(cellElementRole) &&
@@ -90,12 +88,12 @@ class QW_ACT_R39 extends AtomicRule {
               }
             }
           } else {
-            const elements = rowElements[index].getElements("td,[role='cell'],[role='gridcell']");
+            const elements = rowElements[index].findAll("td,[role='cell'],[role='gridcell']");
             for (const cellElement of elements) {
               if (!found) {
-                const cellElementRole = window.AccessibilityUtils.getElementRole(cellElement);
+                const cellElementRole = cellElement.getRole();
                 // and verifying if it has a headers attribute that includes headerElement's id
-                const headers = cellElement.getElementAttribute('headers');
+                const headers = cellElement.getAttribute('headers');
                 found =
                   !!cellElementRole &&
                   this.cellRoles.includes(cellElementRole) &&
@@ -129,14 +127,14 @@ function getFirstAncestorElementByNameOrRoles(
   names: string[],
   roles: string[]
 ): typeof window.qwElement | null {
-  const parent = element.getElementParent();
+  const parent = element.getParent();
 
   let sameRole = false;
   let sameName = false;
 
   if (parent !== null) {
-    const parentName = parent.getElementTagName();
-    const parentRole = window.AccessibilityUtils.getElementRole(parent);
+    const parentName = parent.getTagName();
+    const parentRole = parent.getRole();
 
     if (parentName !== null) {
       sameName = names.includes(parentName);
@@ -158,10 +156,10 @@ function getFirstAncestorElementByNameOrRoles(
 function getElementIndexOfParentChildren(element: typeof window.qwElement): number {
   let elementIndex = 0;
   let foundIndex = false;
-  const elementParent = element.getElementParent();
-  const elementParentChildren = elementParent ? elementParent.getElementChildren() : null;
+  const elementParent = element.getParent();
+  const elementParentChildren = elementParent ? elementParent.getChildren() : null;
   while (elementParentChildren && !foundIndex && elementIndex < elementParentChildren.length) {
-    if (elementParentChildren[elementIndex].getElementSelector() !== element.getElementSelector()) {
+    if (elementParentChildren[elementIndex].getSelector() !== element.getSelector()) {
       elementIndex++;
     } else {
       foundIndex = true;

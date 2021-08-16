@@ -14,8 +14,7 @@ class QW_ACT_R48 extends AtomicRule {
   execute(element: typeof window.qwElement): void {
     const test = new Test();
 
-    const isInAT = window.AccessibilityUtils.isElementInAT(element);
-    if (!isInAT) {
+    if (!element.isInTheAccessibilityTree()) {
       test.verdict = 'passed';
       test.resultCode = 'P1';
     } else {

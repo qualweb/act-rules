@@ -29,9 +29,9 @@ class QW_ACT_R65 extends AtomicRule {
   ])
   execute(element: typeof window.qwElement): void {
     // Without ShadowDom or iframes
-    const elementList = element.getElements('*');
+    const elementList = element.findAll('*');
     const inSequentialFocusList = elementList.filter((element) => {
-      return window.AccessibilityUtils.isPartOfSequentialFocusNavigation(element);
+      return element.isPartOfSequentialFocusNavigation();
     });
 
     const test = new Test();

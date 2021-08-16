@@ -14,27 +14,27 @@ class QW_ACT_R50 extends AtomicRule {
   execute(element: typeof window.qwElement): void {
     const test = new Test();
 
-    const autoplay = element.getElementProperty('autoplay');
-    const paused = element.getElementAttribute('paused');
-    const muted = element.getElementProperty('muted');
-    const srcAttr = element.getElementAttribute('src');
-    const childSrc = element.getElements('source[src]');
-    const controls = element.getElementProperty('controls');
-    const duration = parseInt(element.getElementProperty('duration'));
-    const hasSoundTrack = window.DomUtils.videoElementHasAudio(element);
-    const hasPuppeteerApplicableData = duration > 3 && hasSoundTrack;
+    const autoplay = element.isMediaWithAutoplay();
+    const paused = element.getAttribute('paused');
+    const muted = element.isMediaMuted();
+    const srcAttr = element.getAttribute('src');
+    const childSrc = element.findAll('source[src]');
+    const controls = element.hasMediaControls();
+    const duration = element.getMediaDuration();
+    const hasSoundTrack = element.videoHasAudio();
+    const hasPuppeteerApplicableData = duration && duration > 3 && hasSoundTrack;
     const src = new Array<string | null>();
 
     if (childSrc.length > 0) {
       for (const child of childSrc || []) {
-        src.push(child.getElementAttribute('src'));
+        src.push(child.getAttribute('src'));
       }
     } else {
       src.push(srcAttr);
     }
 
     if (!(!autoplay || paused || muted || (!srcAttr && childSrc.length === 0))) {
-      if (!(duration >= 0 && hasSoundTrack)) {
+      if (!(duration && duration >= 0 && hasSoundTrack)) {
         test.verdict = 'warning';
         test.resultCode = 'W1';
       } else if (hasPuppeteerApplicableData) {

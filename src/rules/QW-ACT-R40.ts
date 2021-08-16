@@ -17,15 +17,15 @@ class QW_ACT_R40 extends AtomicRule {
     let isApplicable = false;
 
     let parent: typeof window.qwElement | null = element;
-    while (parent && parent.getElementTagName().toLowerCase() !== 'html') {
-      if (parent.getElementTagName().toLowerCase() === 'svg') {
+    while (parent && parent.getTagName().toLowerCase() !== 'html') {
+      if (parent.getTagName().toLowerCase() === 'svg') {
         isApplicable = false;
         break;
       }
 
-      const of = parent.getElementStyleProperty('overflow', null);
-      const ofx = parent.getElementStyleProperty('overflow-x', null);
-      const ofy = parent.getElementStyleProperty('overflow-y', null);
+      const of = parent.getComputedStyle('overflow', null);
+      const ofx = parent.getComputedStyle('overflow-x', null);
+      const ofy = parent.getComputedStyle('overflow-y', null);
 
       if (
         of === 'hidden' ||
@@ -38,13 +38,13 @@ class QW_ACT_R40 extends AtomicRule {
         isApplicable = true;
       }
 
-      const ariaHidden = parent.getElementAttribute('aria-hidden');
+      const ariaHidden = parent.getAttribute('aria-hidden');
       if (ariaHidden !== null && ariaHidden === 'true') {
         isApplicable = false;
         break;
       }
 
-      parent = parent.getElementParent();
+      parent = parent.getParent();
     }
 
     if (isApplicable) {

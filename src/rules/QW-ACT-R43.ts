@@ -13,22 +13,22 @@ class QW_ACT_R43 extends AtomicRule {
   @ElementExists
   @ElementIsVisible
   execute(element: typeof window.qwElement): void {
-    if (element.getElementTagName().toLowerCase() === 'iframe') {
+    if (element.getTagName().toLowerCase() === 'iframe') {
       return;
     }
 
     let hasVisibleChildren = false;
     let isApplicable = false;
-    for (const child of element.getElementChildren()) {
-      if (window.DomUtils.isElementVisible(child)) {
+    for (const child of element.getChildren()) {
+      if (child.isVisible()) {
         hasVisibleChildren = true;
         break;
       }
     }
     if (hasVisibleChildren) {
-      const of = element.getElementStyleProperty('overflow', null);
-      const ofx = element.getElementStyleProperty('overflow-x', null);
-      const ofy = element.getElementStyleProperty('overflow-y', null);
+      const of = element.getComputedStyle('overflow', null);
+      const ofx = element.getComputedStyle('overflow-x', null);
+      const ofy = element.getComputedStyle('overflow-y', null);
 
       if (
         of === 'auto' ||
@@ -41,21 +41,21 @@ class QW_ACT_R43 extends AtomicRule {
         ofy === 'clip' ||
         ofy === 'scroll'
       ) {
-        const scrollWidth = element.getElementProperty('scrollWidth');
-        const clientWidth = element.getElementProperty('clientWidth');
+        const scrollWidth = element.getScrollWidth();
+        const clientWidth = element.getClientWidth();
 
-        const differenceWidth = parseInt(scrollWidth) - parseInt(clientWidth);
+        const differenceWidth = scrollWidth - clientWidth;
 
-        const scrollHeight = element.getElementProperty('scrollHeight');
-        const clientHeight = element.getElementProperty('clientHeight');
+        const scrollHeight = element.getScrollHeight();
+        const clientHeight = element.getClientHeight();
 
-        const differenceHeight = parseInt(scrollHeight) - parseInt(clientHeight);
+        const differenceHeight = scrollHeight - clientHeight;
 
-        const paddingLeft = element.getElementStyleProperty('padding-left', null);
-        const paddingRight = element.getElementStyleProperty('padding-right', null);
+        const paddingLeft = element.getComputedStyle('padding-left', null);
+        const paddingRight = element.getComputedStyle('padding-right', null);
 
-        const paddingTop = element.getElementStyleProperty('padding-top', null);
-        const paddingBottom = element.getElementStyleProperty('padding-bottom', null);
+        const paddingTop = element.getComputedStyle('padding-top', null);
+        const paddingBottom = element.getComputedStyle('padding-bottom', null);
 
         isApplicable =
           differenceWidth > parseInt(paddingLeft) ||
@@ -82,12 +82,12 @@ class QW_ACT_R43 extends AtomicRule {
   }
 
   private isInSequentialFocusNavigation(element: typeof window.qwElement): boolean {
-    if (window.AccessibilityUtils.isPartOfSequentialFocusNavigation(element)) {
+    if (element.isPartOfSequentialFocusNavigation()) {
       return true;
     } else {
       let result = false;
-      for (const child of element.getElementChildren()) {
-        if (window.AccessibilityUtils.isPartOfSequentialFocusNavigation(child)) {
+      for (const child of element.getChildren()) {
+        if (child.isPartOfSequentialFocusNavigation()) {
           return true;
         } else {
           result = result || this.isInSequentialFocusNavigation(child);

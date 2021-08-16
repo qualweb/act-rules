@@ -12,19 +12,19 @@ class QW_ACT_R44 extends AtomicRule {
 
   @ElementExists
   execute(element: typeof window.qwElement): void {
-    const links = element.getElements('a[href], [role="link"]');
+    const links = element.findAll('a[href], [role="link"]');
     const linkDataList = new Array<any>();
 
     for (const link of links || []) {
       let aName: string | undefined;
-      if (window.DomUtils.isElementADescendantOf(link, ['svg'], [])) {
-        aName = window.AccessibilityUtils.getAccessibleNameSVG(link);
-      } else if (window.AccessibilityUtils.isElementInAT(link)) {
-        aName = window.AccessibilityUtils.getAccessibleName(link);
+      if (link.isDescendantOf(['svg'], [])) {
+        aName = link.getAccessibleNameSVG();
+      } else if (link.isInTheAccessibilityTree()) {
+        aName = link.getAccessibleName();
       }
 
-      const href = link.getElementAttribute('href');
-      const context = window.AccessibilityUtils.getLinkContext(link);
+      const href = link.getAttribute('href');
+      const context = link.getLinkContext();
 
       if (aName) {
         linkDataList.push({

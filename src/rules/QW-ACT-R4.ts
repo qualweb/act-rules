@@ -16,7 +16,7 @@ class QW_ACT_R4 extends AtomicRule {
   @ElementHasAttribute('http-equiv')
   @ElementHasNonEmptyAttribute('http-equiv')
   execute(element: typeof window.qwElement): void {
-    const content = <string>element.getElementAttribute('content');
+    const content = <string>element.getAttribute('content');
 
     if (super.getNumberOfPassedResults() + super.getNumberOfFailedResults() > 0) {
       // only one meta needs to pass or fail, others will be discarded

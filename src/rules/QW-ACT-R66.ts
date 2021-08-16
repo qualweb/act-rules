@@ -21,7 +21,7 @@ class QW_ACT_R66 extends AtomicRule {
   execute(element: typeof window.qwElement): void {
     const test = new Test();
 
-    const accessibleName = window.AccessibilityUtils.getAccessibleName(element);
+    const accessibleName = element.getAccessibleName();
     if (accessibleName && accessibleName.trim() !== '') {
       test.verdict = 'passed';
       test.resultCode = 'P1';

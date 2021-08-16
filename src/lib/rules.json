@@ -1048,7 +1048,7 @@
       "related": [],
       "url": "https://act-rules.github.io/rules/fd3a94",
       "type": ["ACTRule", "TestCase"],
-      "a11yReq": ["WCAG21:language"]
+      "a11yReq": [""]
     }
   },
   "QW_ACT_R48": {
@@ -1064,7 +1064,7 @@
       "related": [],
       "url": "https://act-rules.github.io/rules/46ca7f",
       "type": ["ACTRule", "TestCase"],
-      "a11yReq": ["WCAG21:language"]
+      "a11yReq": [""]
     }
   },
   "QW_ACT_R49": {

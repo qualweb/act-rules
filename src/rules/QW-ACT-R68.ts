@@ -16,11 +16,11 @@ class QW_ACT_R68 extends AtomicRule {
     const test = new Test();
 
     if (element.hasCSSProperty('line-height')) {
-      const styleAttribute = element.getElementAttribute('style');
+      const styleAttribute = element.getAttribute('style');
       const declaredLineHeight = this.parseStyle(styleAttribute);
       const computedRawLineHeight = element.getCSSProperty('line-height');
-      const computedLineHeight = element.getElementStyleProperty('line-height', null);
-      const fontSize = element.getElementStyleProperty('font-size', null);
+      const computedLineHeight = element.getComputedStyle('line-height', null);
+      const fontSize = element.getComputedStyle('font-size', null);
 
       if (!this.isImportant(computedRawLineHeight, element)) {
         test.verdict = 'passed';
@@ -55,7 +55,7 @@ class QW_ACT_R68 extends AtomicRule {
 
   private isImportant(cssValue: any, element: typeof window.qwElement): boolean {
     if (cssValue.value === 'inherit' || cssValue.value === 'unset') {
-      const parent = this.findParentWithCSSProperty(element.getElementParent());
+      const parent = this.findParentWithCSSProperty(element.getParent());
       if (parent === null) return false;
       return this.isImportant(parent?.getCSSProperty('line-height'), parent);
     }
@@ -64,7 +64,7 @@ class QW_ACT_R68 extends AtomicRule {
 
   private isNormal(cssValue: any, element: typeof window.qwElement): boolean {
     if (cssValue.value === 'inherit' || cssValue.value === 'unset') {
-      const parent = this.findParentWithCSSProperty(element.getElementParent());
+      const parent = this.findParentWithCSSProperty(element.getParent());
       if (parent === null) return false;
       return this.isImportant(parent?.getCSSProperty('line-height'), parent);
     }
@@ -86,7 +86,7 @@ class QW_ACT_R68 extends AtomicRule {
       if (element?.getCSSProperty('line-height')) {
         return element;
       }
-      element = element.getElementParent();
+      element = element.getParent();
     }
     return null;
   }

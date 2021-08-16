@@ -14,7 +14,7 @@ class QW_ACT_R5 extends AtomicRule {
   @IsHTMLDocument
   @ElementHasNonEmptyAttribute('lang')
   execute(element: typeof window.qwElement): void {
-    const lang = <string>element.getElementAttribute('lang');
+    const lang = <string>element.getAttribute('lang');
 
     const test = new Test();
 

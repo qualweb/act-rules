@@ -13,13 +13,13 @@ class QW_ACT_R27 extends AtomicRule {
   @ElementExists
   execute(element: typeof window.qwElement): void {
     const ariaJSON = window.AccessibilityUtils.ariaAttributesRoles;
-    const allElements = element.getElements('*');
+    const allElements = element.findAll('*');
     for (const elem of allElements ?? []) {
       const test = new Test();
 
       let countAria = 0;
       let failedAria = '';
-      const elemAttribs = elem.getElementAttributesName();
+      const elemAttribs = elem.getAttributeNames();
       for (const attrib of elemAttribs || []) {
         if (attrib.startsWith('aria-')) {
           countAria++;

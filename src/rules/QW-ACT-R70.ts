@@ -15,16 +15,14 @@ class QW_ACT_R70 extends AtomicRule {
   execute(element: typeof window.qwElement): void {
     const test = new Test();
 
-    if (!window.DomUtils.isElementVisible(element)) {
+    if (!element.isVisible()) {
       test.verdict = 'passed';
       test.resultCode = 'RC1';
       test.addElement(element);
     } else {
-      const elementList = window.qwPage.getElements('*', undefined);
+      const elementList = window.qwPage.findAll('*', undefined);
       const inSequentialFocusList = elementList.filter((elem) => {
-        return (
-          window.AccessibilityUtils.isPartOfSequentialFocusNavigation(elem) && window.DomUtils.isElementVisible(elem)
-        );
+        return elem.isPartOfSequentialFocusNavigation() && elem.isVisible();
       });
 
       if (inSequentialFocusList.length === 0) {

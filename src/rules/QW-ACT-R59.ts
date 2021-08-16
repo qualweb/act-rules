@@ -13,7 +13,7 @@ class QW_ACT_R59 extends AtomicRule {
   @ElementIsNotHidden
   @ElementIsVisible
   execute(element: typeof window.qwElement): void {
-    const autoPlay = element.getElementProperty('autoplay');
+    const autoPlay = element.isMediaWithAutoplay();
 
     if (autoPlay) {
       const test = new Test('warning', undefined, 'W1');

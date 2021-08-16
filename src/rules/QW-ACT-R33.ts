@@ -16,10 +16,10 @@ class QW_ACT_R33 extends AtomicRule {
 
     const test = new Test();
 
-    const explicitRole = window.AccessibilityUtils.getElementValidExplicitRole(element);
-    const implicitRole = window.AccessibilityUtils.getImplicitRole(element, '');
-    const isInAT = window.AccessibilityUtils.isElementInAT(element);
-    const isValidRole = window.AccessibilityUtils.elementHasValidRole(element);
+    const explicitRole = element.getValidExplicitRole();
+    const implicitRole = element.getImplicitRole('');
+    const isInAT = element.isInTheAccessibilityTree();
+    const isValidRole = element.hasValidRole();
     if (
       explicitRole !== null &&
       isValidRole &&
@@ -28,12 +28,12 @@ class QW_ACT_R33 extends AtomicRule {
       roles[explicitRole]['requiredContextRole'] !== ''
     ) {
       const requiredContextRole = roles[explicitRole]['requiredContextRole'];
-      const id = element.getElementAttribute('id');
+      const id = element.getAttribute('id');
 
-      const ariaOwns = window.qwPage.getElement('[aria-owns' + `~="${id}"]`, element);
+      const ariaOwns = window.qwPage.find('[aria-owns' + `~="${id}"]`, element);
 
       if (ariaOwns !== null) {
-        const ariaOwnsRole = window.AccessibilityUtils.getElementRole(ariaOwns);
+        const ariaOwnsRole = ariaOwns.getRole();
         if (ariaOwnsRole && requiredContextRole.includes(ariaOwnsRole)) {
           test.verdict = 'passed';
           test.resultCode = 'P1';
@@ -55,18 +55,18 @@ class QW_ACT_R33 extends AtomicRule {
   }
 
   private isElementADescendantOf(element: typeof window.qwElement, roles: string[]): boolean {
-    let parent = element.getElementParent();
+    let parent = element.getParent();
     if (!parent) {
-      const documentSelector = element.getElementAttribute('_documentSelector');
+      const documentSelector = element.getAttribute('_documentSelector');
       if (!!documentSelector && !documentSelector.includes('iframe')) {
-        parent = window.qwPage.getElement(documentSelector);
+        parent = window.qwPage.find(documentSelector);
       }
     }
     let result = false;
     let sameRole = false;
 
     if (parent !== null) {
-      const parentRole = window.AccessibilityUtils.getElementRole(parent);
+      const parentRole = parent.getRole();
       if (parentRole !== null) {
         sameRole = roles.includes(parentRole);
       }

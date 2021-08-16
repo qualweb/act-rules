@@ -22,18 +22,18 @@ class QW_ACT_R34 extends AtomicRule {
     ariaSelector = ariaSelector.substring(0, ariaSelector.length - 2);
 
     // get all elements that are using aria attributes
-    const elementsWithAriaAttribs = element.getElements(ariaSelector);
+    const elementsWithAriaAttribs = element.findAll(ariaSelector);
 
     for (const elem of elementsWithAriaAttribs || []) {
-      const isInAT = window.AccessibilityUtils.isElementInAT(elem);
-      let elemAttribs = elem.getElementAttributesName();
+      const isInAT = elem.isInTheAccessibilityTree();
+      let elemAttribs = elem.getAttributeNames();
       elemAttribs = elemAttribs.filter((elem) => elem.startsWith('ar'));
 
       for (const attrib of elemAttribs ?? []) {
         if (attrib in ariaJSON) {
           //if is in the accessibility tree
           const values = ariaJSON[attrib]['values'];
-          const attrValue = elem.getElementAttribute(attrib);
+          const attrValue = elem.getAttribute(attrib);
           const typeValue = ariaJSON[attrib]['typeValue'];
 
           let result = false;
@@ -57,7 +57,7 @@ class QW_ACT_R34 extends AtomicRule {
                 }
               }
             } else {
-              const role = window.AccessibilityUtils.getElementRole(elem);
+              const role = elem.getRole();
 
               let requiredAriaList;
               if (role !== null && !!rolesJSON[role]) {
@@ -65,7 +65,7 @@ class QW_ACT_R34 extends AtomicRule {
               }
               if (typeValue === 'id') {
                 const isRequired = requiredAriaList && requiredAriaList.includes(attrib);
-                if (isRequired) result = window.qwPage.getElement('#' + attrValue) !== null;
+                if (isRequired) result = window.qwPage.find('#' + attrValue) !== null;
                 else result = !attrValue.includes(' ');
               } else {
                 //if (typeValue === 'idList')
@@ -74,7 +74,7 @@ class QW_ACT_R34 extends AtomicRule {
                 if (isRequired) {
                   for (const id of list || []) {
                     if (!result) {
-                      result = window.qwPage.getElement('#' + id) !== null;
+                      result = window.qwPage.find('#' + id) !== null;
                     }
                   }
                 } else {

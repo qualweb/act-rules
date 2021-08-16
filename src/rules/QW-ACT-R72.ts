@@ -13,42 +13,38 @@ class QW_ACT_R72 extends AtomicRule {
   execute(): void {
     const test = new Test();
 
-    const elementList = window.qwPage.getElements('*');
+    const elementList = window.qwPage.findAll('*');
     //mudar para find
     const inSequentialFocusList = elementList.filter((element: typeof window.qwElement) => {
-      return window.AccessibilityUtils.isPartOfSequentialFocusNavigation(element);
+      return element.isPartOfSequentialFocusNavigation();
     });
 
     if (inSequentialFocusList.length > 0) {
       const focused = window.qwPage.getFocusedElement();
 
       // is keyboard actionable
-      if (
-        focused &&
-        (!window.AccessibilityUtils.isPartOfSequentialFocusNavigation(focused) ||
-          !window.DomUtils.isElementVisible(focused))
-      ) {
+      if (focused && (!focused.isPartOfSequentialFocusNavigation() || !focused.isVisible())) {
         // not checking if it is possible to fire an event at the element with the keyboard
         test.verdict = 'failed';
         test.resultCode = 'F1';
 
         test.addElement(focused, false);
-      } else if (focused && !window.AccessibilityUtils.isElementInAT(focused)) {
+      } else if (focused && !focused.isInTheAccessibilityTree()) {
         test.verdict = 'failed';
         test.resultCode = 'F2';
 
         test.addElement(focused, false);
-      } else if (focused && window.AccessibilityUtils.getElementRole(focused) !== 'link') {
+      } else if (focused && focused.getRole() !== 'link') {
         test.verdict = 'failed';
         test.resultCode = 'F3';
 
         test.addElement(focused, false);
-      } else if (focused?.getElementAttribute('href')) {
-        const destination = focused.getElementAttribute('href')?.trim();
+      } else if (focused?.getAttribute('href')) {
+        const destination = focused.getAttribute('href')?.trim();
         if (destination && this.checkDestination(destination)) {
           // only checking that it has an url that starts with # -- other ways of linking to the same page are not considered
 
-          if (window.qwPage.getElementByID(destination.split('#')[1])) {
+          if (window.qwPage.getElementById(destination.split('#')[1])) {
             test.verdict = 'warning';
             test.resultCode = 'W1';
 
