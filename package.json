@@ -36,7 +36,7 @@
   "devDependencies": {
     "@qualweb/dom": "0.2.3",
     "@qualweb/locale": "0.1.4",
-    "@qualweb/qw-page": "0.3.0-alpha",
+    "@qualweb/qw-page": "0.3.0-alpha2",
     "@qualweb/types": "0.8.0-alpha5",
     "@qualweb/util": "0.6.0-alpha2",
     "@tsconfig/recommended": "^1.0.1",

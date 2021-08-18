@@ -98,7 +98,7 @@ describe(`Rule ${rule}`, function () {
   let tests = null;
 
   it('Starting test bench', async function () {
-    browser = await puppeteer.launch({ headless: true });
+    browser = await puppeteer.launch({ headless: false });
     incognito = await browser.createIncognitoBrowserContext();
     data = await getTestCases();
     tests = data.testcases
@@ -115,7 +115,7 @@ describe(`Rule ${rule}`, function () {
           const page = await incognito.newPage();
           try {
             const dom = new Dom(page);
-            const { sourceHtmlHeadContent } = await dom.process(
+            const { sourceHtml } = await dom.process(
               {
                 execute: { act: true },
                 'act-rules': {
@@ -150,24 +150,24 @@ describe(`Rule ${rule}`, function () {
             if (ruleId === '8a213c') {
               await page.keyboard.press('Tab'); // for R72 that needs to check the first focusable element
             }
-            await page.evaluate((sourceHtmlHeadContent) => {
+            await page.evaluate((sourceHtml) => {
               window.act.validateFirstFocusableElementIsLinkToNonRepeatedContent();
 
               const parser = new DOMParser();
               const sourceDoc = parser.parseFromString('', 'text/html');
 
-              sourceDoc.head.innerHTML = sourceHtmlHeadContent;
+              sourceDoc.documentElement.innerHTML = sourceHtml;
 
               const elements = sourceDoc.querySelectorAll('meta');
               const metaElements = new Array();
-              for (const element of elements) {
-                metaElements.push(window.qwPage.createQWElement(element));
-              }
+              elements.forEach((meta) => {
+                metaElements.push(window.qwPage.createQWElementNode(meta));
+              });
 
               window.act.validateMetaElements(metaElements);
               window.act.executeAtomicRules();
               window.act.executeCompositeRules();
-            }, sourceHtmlHeadContent);
+            }, sourceHtml);
 
             if (ruleId === '59br37') {
               await page.setViewport({
@@ -183,7 +183,7 @@ describe(`Rule ${rule}`, function () {
             //console.log(JSON.stringify(report.assertions[rule], null, 2))
             expect(report.assertions[rule].metadata.outcome).to.be.equal(test.outcome);
           } finally {
-            await page.close();
+            //await page.close();
           }
         });
       });
@@ -192,10 +192,10 @@ describe(`Rule ${rule}`, function () {
     describe(`Closing test bench`, async function () {
       it(`Closed`, async function () {
         if (incognito) {
-          await incognito.close();
+          //await incognito.close();
         }
         if (browser) {
-          await browser.close();
+          //await browser.close();
         }
       });
     });

@@ -64,7 +64,7 @@ abstract class Rule {
       translation = <string>this.locale.fallback['act-rules']?.[this.rule.code].results?.[resultCode];
     }
 
-    if (values) {
+    if (translation && values) {
       for (const key of Object.keys(values) || []) {
         translation = translation.replace(new RegExp(`{${key}}`, 'g'), values[key].toString());
       }

@@ -60,7 +60,7 @@ class QW_ACT_R4 extends AtomicRule {
       } else {
         // fails because the time is in between 0 and 72000
         test.verdict = 'failed';
-        test.description = super.getTranslation('RC3', { seconds: n });
+        test.description = super.getTranslation('F1', { seconds: n });
         test.resultCode = 'F1';
       }
 
@@ -70,15 +70,15 @@ class QW_ACT_R4 extends AtomicRule {
   }
 
   private checkIfIsNumber(num: string): boolean {
-    let success = true;
+    let isNum = true;
     for (const n of num || []) {
       if (isNaN(parseInt(n, 0))) {
-        success = false;
+        isNum = false;
         break;
       }
     }
 
-    return success;
+    return isNum;
   }
 }
 
