@@ -22,20 +22,47 @@ class QW_ACT_R22 extends AtomicRule {
     const test = new Test();
 
     const lang = (<string>element.getAttribute('lang')).toLowerCase();
-    const subTag = lang.split('-')[0];
-
     if (lang !== '') {
+      const subTag = lang.split('-')[0];
+      const text = element.getOwnText();
+      const accessibleName = element.getAccessibleName();
+
       if (this.isSubTagValid(subTag)) {
         test.verdict = 'passed';
         test.resultCode = 'P1';
-      } else {
+
+        test.addElement(element);
+        super.addTestResult(test);
+      } else if (
+        (text && text.trim() !== '') ||
+        (accessibleName && accessibleName.trim() !== '') ||
+        this.hasChildWithTextOrAccessibleName(element)
+      ) {
         test.verdict = 'failed';
         test.resultCode = 'F1';
-      }
 
-      test.addElement(element);
-      super.addTestResult(test);
+        test.addElement(element);
+        super.addTestResult(test);
+      }
     }
+  }
+
+  private hasChildWithTextOrAccessibleName(element: typeof window.qwElement): boolean {
+    let hasTextOrAccessibleName = false;
+
+    for (const child of element.getChildren() || []) {
+      if (child.getAttribute('lang') === null && (child.isVisible() || child.isInTheAccessibilityTree())) {
+        const text = child.getOwnText();
+        const accessibleName = child.getAccessibleName();
+        if ((text && text.trim() !== '') || (accessibleName && accessibleName.trim() !== '')) {
+          hasTextOrAccessibleName = true;
+        } else {
+          hasTextOrAccessibleName = this.hasChildWithTextOrAccessibleName(child);
+        }
+      }
+    }
+
+    return hasTextOrAccessibleName;
   }
 
   private isSubTagValid(subTag: string): boolean {

@@ -162,7 +162,7 @@ class QW_ACT_R24 extends AtomicRule {
       'transaction-amount': 'numeric',
       language: 'text',
       bday: 'date',
-      'bday-day': 'numeric',
+      'bday-day': 'numeric,tel',
       'bday-month': 'numeric',
       'bday-year': 'numeric',
       sex: 'text',
@@ -221,7 +221,7 @@ class QW_ACT_R24 extends AtomicRule {
 
     if (autoComplete) {
       autoComplete = autoComplete.trim();
-      if (autoComplete === '') {
+      if (autoComplete === '' || autoComplete === 'off') {
         return;
       }
 
@@ -389,39 +389,79 @@ class QW_ACT_R24 extends AtomicRule {
   }
 
   private isAppropriateFieldForTheFormControl(field: string, element: typeof window.qwElement): boolean {
-    if (field.toLowerCase() === 'off') {
-      return true;
-    }
-
     //@ts-ignore
     const fieldControl = this.autoCompleteTable.fieldControl[field.toLowerCase()];
+    if (!fieldControl.includes(',')) {
+      switch (fieldControl) {
+        case 'text':
+          return this.isText(element);
+        case 'multiline':
+          return this.isMultiline(element);
+        case 'password':
+          return this.isPassword(element);
+        case 'url':
+          return this.isURL(element);
+        case 'email':
+          return this.isEmail(element);
+        case 'tel':
+          return this.isTel(element);
+        case 'numeric':
+          return this.isNumeric(element);
+        case 'month':
+          return this.isMonth(element);
+        case 'date':
+          return this.isDate(element);
+      }
+    } else {
+      const fields = fieldControl.split(',');
+      let isAppropriate = false;
+      for (const field of fields ?? []) {
+        switch (field) {
+          case 'text':
+            isAppropriate ||= this.isText(element);
+            break;
+          case 'multiline':
+            isAppropriate ||= this.isMultiline(element);
+            break;
+          case 'password':
+            isAppropriate ||= this.isPassword(element);
+            break;
+          case 'url':
+            isAppropriate ||= this.isURL(element);
+            break;
+          case 'email':
+            isAppropriate ||= this.isEmail(element);
+            break;
+          case 'tel':
+            isAppropriate ||= this.isTel(element);
+            break;
+          case 'numeric':
+            isAppropriate ||= this.isNumeric(element);
+            break;
+          case 'month':
+            isAppropriate ||= this.isMonth(element);
+            break;
+          case 'date':
+            isAppropriate ||= this.isDate(element);
+            break;
+        }
+      }
 
-    switch (fieldControl) {
-      case 'text':
-        return this.isText(element);
-      case 'multiline':
-        return this.isMultiline(element);
-      case 'password':
-        return this.isPassword(element);
-      case 'url':
-        return this.isURL(element);
-      case 'email':
-        return this.isEmail(element);
-      case 'tel':
-        return this.isTel(element);
-      case 'numeric':
-        return this.isNumeric(element);
-      case 'month':
-        return this.isMonth(element);
-      case 'date':
-        return this.isDate(element);
+      return isAppropriate;
     }
 
     return false;
   }
 
   private isCorrectAutocompleteField(element: typeof window.qwElement, autoCompleteField: string): boolean {
-    const fields = autoCompleteField.split(' ');
+    const fields = autoCompleteField
+      .split(' ')
+      .map((field: string) => {
+        return field.trim();
+      })
+      .filter((field: string) => {
+        return field !== '';
+      });
 
     if (fields[0].startsWith('section-')) fields.splice(0, 1);
 

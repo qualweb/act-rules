@@ -87,7 +87,7 @@ function ElementHasNonEmptyAttribute(attribute: string) {
     const method = descriptor.value;
     descriptor.value = function () {
       const attr = (<typeof window.qwElement>arguments[0]).getAttribute(attribute);
-      if (attr && attr.trim()) {
+      if (attr && attr.trim() !== '') {
         return method.apply(this, arguments);
       }
     };
@@ -139,7 +139,19 @@ function ElementHasText(_target: any, _propertyKey: string, descriptor: Property
   const method = descriptor.value;
   descriptor.value = function () {
     const element = <typeof window.qwElement>arguments[0];
-    if (element.getText()?.trim() !== '') {
+    const text = element.getText();
+    if (text && text.trim() !== '') {
+      return method.apply(this, arguments);
+    }
+  };
+}
+
+function ElementHasOwnText(_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    const element = <typeof window.qwElement>arguments[0];
+    const text = element.getOwnText();
+    if (text && text.trim() !== '') {
       return method.apply(this, arguments);
     }
   };
@@ -178,11 +190,15 @@ function ElementHasNegativeTabIndex(_target: any, _propertyKey: string, descript
 function ElementIsVisibleOrInAccessibilityTree(_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
   const method = descriptor.value;
   descriptor.value = function () {
-    const page = <typeof window.qwPage>window.qwPage;
+    /*const page = <typeof window.qwPage>window.qwPage;
     const elements = page.findAll('*').filter((element: typeof window.qwElement) => {
       return element.hasTextNode() && (element.isVisible() || element.isInTheAccessibilityTree());
     });
     if (elements.length > 0) {
+      return method.apply(this, arguments);
+    }*/
+    const element = <typeof window.qwElement>arguments[0];
+    if (element.isVisible() || element.isInTheAccessibilityTree()) {
       return method.apply(this, arguments);
     }
   };
@@ -389,6 +405,7 @@ export {
   IfElementHasTagNameMustHaveAttributeRole,
   ElementHasNonEmptyAttribute,
   ElementHasText,
+  ElementHasOwnText,
   ElementHasTextNode,
   ElementIsInAccessibilityTree,
   ElementSrcAttributeFilenameEqualsAccessibleName,

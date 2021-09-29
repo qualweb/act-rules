@@ -1,7 +1,7 @@
 import { ACTRule } from '@qualweb/act-rules';
 import { Translate } from '@qualweb/locale';
 import AtomicRule from '../lib/AtomicRule.object';
-import { ACTRuleDecorator, ElementExists } from '../lib/decorator';
+import { ACTRuleDecorator, ElementExists, ElementIsInAccessibilityTree } from '../lib/decorator';
 import Test from '../lib/Test.object';
 
 @ACTRuleDecorator
@@ -11,22 +11,22 @@ class QW_ACT_R33 extends AtomicRule {
   }
 
   @ElementExists
+  @ElementIsInAccessibilityTree
   execute(element: typeof window.qwElement): void {
     const roles = window.AccessibilityUtils.roles;
 
-    const test = new Test();
-
     const explicitRole = element.getValidExplicitRole();
     const implicitRole = element.getImplicitRole('');
-    const isInAT = element.isInTheAccessibilityTree();
     const isValidRole = element.hasValidRole();
+    console.log(explicitRole, implicitRole, isValidRole, element.getRole());
     if (
       explicitRole !== null &&
       isValidRole &&
       explicitRole !== implicitRole &&
-      isInAT &&
       roles[explicitRole]['requiredContextRole'] !== ''
     ) {
+      const test = new Test();
+
       const requiredContextRole = roles[explicitRole]['requiredContextRole'];
       const id = element.getAttribute('id');
 

@@ -115,6 +115,7 @@ class ACTRules {
 
   private executeRule(rule: string, selector: string): void {
     const elements = window.qwPage.findAll(selector);
+    console.log(elements);
     if (elements.length > 0) {
       for (const elem of elements ?? []) {
         this.rules[rule].execute(elem);
