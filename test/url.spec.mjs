@@ -48,7 +48,7 @@ describe('Running tests', function () {
         const elements = sourceDoc.querySelectorAll('meta');
         const metaElements = new Array();
         for (const element of elements) {
-          metaElements.push(window.qwPage.createQWElement(element));
+          metaElements.push(window.qwPage.createQWElementNode(element));
         }
 
         window.act.validateMetaElements(metaElements);
