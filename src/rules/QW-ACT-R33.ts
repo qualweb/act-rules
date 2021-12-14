@@ -18,7 +18,7 @@ class QW_ACT_R33 extends AtomicRule {
     const explicitRole = element.getValidExplicitRole();
     const implicitRole = element.getImplicitRole('');
     const isValidRole = element.hasValidRole();
-    console.log(explicitRole, implicitRole, isValidRole, element.getRole());
+
     if (
       explicitRole !== null &&
       isValidRole &&

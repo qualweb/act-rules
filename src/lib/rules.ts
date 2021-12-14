@@ -19,7 +19,6 @@ import QW_ACT_R25 from '../rules/QW-ACT-R25';
 import QW_ACT_R26 from '../rules/QW-ACT-R26';
 import QW_ACT_R27 from '../rules/QW-ACT-R27';
 import QW_ACT_R28 from '../rules/QW-ACT-R28';
-import QW_ACT_R29 from '../rules/QW-ACT-R29';
 import QW_ACT_R3 from '../rules/QW-ACT-R3';
 import QW_ACT_R30 from '../rules/QW-ACT-R30';
 import QW_ACT_R31 from '../rules/QW-ACT-R31';
@@ -48,14 +47,10 @@ import QW_ACT_R54 from '../rules/QW-ACT-R54';
 import QW_ACT_R55 from '../rules/QW-ACT-R55';
 import QW_ACT_R56 from '../rules/QW-ACT-R56';
 import QW_ACT_R57 from '../rules/QW-ACT-R57';
-import QW_ACT_R58 from '../rules/QW-ACT-R58';
-import QW_ACT_R59 from '../rules/QW-ACT-R59';
 import QW_ACT_R6 from '../rules/QW-ACT-R6';
 import QW_ACT_R60 from '../rules/QW-ACT-R60';
 import QW_ACT_R61 from '../rules/QW-ACT-R61';
 import QW_ACT_R62 from '../rules/QW-ACT-R62';
-import QW_ACT_R63 from '../rules/QW-ACT-R63';
-import QW_ACT_R64 from '../rules/QW-ACT-R64';
 import QW_ACT_R65 from '../rules/QW-ACT-R65';
 import QW_ACT_R66 from '../rules/QW-ACT-R66';
 import QW_ACT_R67 from '../rules/QW-ACT-R67';
@@ -64,10 +59,6 @@ import QW_ACT_R69 from '../rules/QW-ACT-R69';
 import QW_ACT_R7 from '../rules/QW-ACT-R7';
 import QW_ACT_R70 from '../rules/QW-ACT-R70';
 import QW_ACT_R71 from '../rules/QW-ACT-R71';
-import QW_ACT_R72 from '../rules/QW-ACT-R72';
-import QW_ACT_R73 from '../rules/QW-ACT-R73';
-import QW_ACT_R74 from '../rules/QW-ACT-R74';
-import QW_ACT_R75 from '../rules/QW-ACT-R75';
 import QW_ACT_R76 from '../rules/QW-ACT-R76';
 import QW_ACT_R9 from '../rules/QW-ACT-R9';
 
@@ -93,7 +84,6 @@ export {
   QW_ACT_R26,
   QW_ACT_R27,
   QW_ACT_R28,
-  QW_ACT_R29,
   QW_ACT_R3,
   QW_ACT_R30,
   QW_ACT_R31,
@@ -122,14 +112,10 @@ export {
   QW_ACT_R55,
   QW_ACT_R56,
   QW_ACT_R57,
-  QW_ACT_R58,
-  QW_ACT_R59,
   QW_ACT_R6,
   QW_ACT_R60,
   QW_ACT_R61,
   QW_ACT_R62,
-  QW_ACT_R63,
-  QW_ACT_R64,
   QW_ACT_R65,
   QW_ACT_R66,
   QW_ACT_R67,
@@ -138,10 +124,6 @@ export {
   QW_ACT_R7,
   QW_ACT_R70,
   QW_ACT_R71,
-  QW_ACT_R72,
-  QW_ACT_R73,
-  QW_ACT_R74,
-  QW_ACT_R75,
   QW_ACT_R76,
   QW_ACT_R9,
 };

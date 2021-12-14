@@ -17,7 +17,7 @@ class QW_ACT_R1 extends AtomicRule {
       const test = new Test();
       // the first title element was not tested yet
       if (!element) {
-        //the title element does not exit
+        //the title element does not exist
         test.verdict = 'failed';
         test.resultCode = 'F1';
       }

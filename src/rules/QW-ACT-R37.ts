@@ -4,11 +4,11 @@ import AtomicRule from '../lib/AtomicRule.object';
 import {
   ACTRuleDecorator,
   ElementExists,
-  ElementHasText,
   ElementIsHTMLElement,
   ElementIsNot,
   ElementIsVisible,
-  ElementIsNotWidget
+  ElementIsNotWidget,
+  ElementHasOwnText
 } from '../lib/decorator';
 import Test from '../lib/Test.object';
 
@@ -23,13 +23,13 @@ class QW_ACT_R37 extends AtomicRule {
   @ElementIsNot(['html', 'head', 'body', 'script', 'style', 'meta'])
   @ElementIsVisible
   @ElementIsNotWidget
-  @ElementHasText
+  @ElementHasOwnText
   execute(element: typeof window.qwElement): void {
     const disabledWidgets = window.disabledWidgets;
 
     const test = new Test();
 
-    const visible = element.isVisible();
+    /*const visible = element.isVisible();
 
     if (!visible) {
       return;
@@ -50,13 +50,15 @@ class QW_ACT_R37 extends AtomicRule {
     const isWidget = element.isWidget();
     if (isWidget) {
       return;
-    }
+    }*/
 
-    const elementSelectors = element.getSelector();
+    const elementText = element.getOwnText();
+    console.log('ola');
+    const elementSelector = element.getSelector();
 
     for (const disableWidget of disabledWidgets || []) {
       const selectors = disableWidget.getAccessibleNameSelector();
-      if (disableWidget && selectors && selectors.includes(elementSelectors)) {
+      if (disableWidget && selectors && selectors.includes(elementSelector)) {
         return;
       }
     }
@@ -146,7 +148,7 @@ class QW_ACT_R37 extends AtomicRule {
         parsedBG === undefined ||
         (parsedBG.red === 0 && parsedBG.green === 0 && parsedBG.blue === 0 && parsedBG.alpha === 0)
       ) {
-        const parent = elementAux.getParent();
+        const parent = elementAux.getParentAllContexts();
         if (parent) {
           bgColor = this.getBackground(parent);
           if (this.isImage(bgColor)) {
@@ -197,7 +199,6 @@ class QW_ACT_R37 extends AtomicRule {
       }
 
       const parsedFG = this.parseRGBString(fgColor, opacity);
-
       if (!this.equals(parsedBG, parsedFG)) {
         if (elementText && this.isHumanLanguage(elementText)) {
           const contrastRatio = this.getContrast(parsedBG, parsedFG);

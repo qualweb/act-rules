@@ -22,6 +22,7 @@ class Test implements ACTRuleResult {
     if (aName) {
       accessibleName = element.getAccessibleName();
     }
+
     this.elements.push({ htmlCode, pointer, accessibleName });
   }
 

@@ -66,15 +66,12 @@ class ACTRules {
         } else if (!this.rules[rule].hasPrincipleAndLevels(options.principles, ['A', 'AA', 'AAA'])) {
           this.rulesToExecute[rule] = false;
         }
-      } else if (options.levels && options.levels.length !== 0) {
-        if (
-          !this.rules[rule].hasPrincipleAndLevels(
-            ['Perceivable', 'Operable', 'Understandable', 'Robust'],
-            options.levels
-          )
-        ) {
-          this.rulesToExecute[rule] = false;
-        }
+      } else if (
+        options.levels &&
+        options.levels.length !== 0 &&
+        !this.rules[rule].hasPrincipleAndLevels(['Perceivable', 'Operable', 'Understandable', 'Robust'], options.levels)
+      ) {
+        this.rulesToExecute[rule] = false;
       }
       if (!options.principles && !options.levels) {
         if (options.rules && options.rules.length !== 0) {
@@ -115,7 +112,6 @@ class ACTRules {
 
   private executeRule(rule: string, selector: string): void {
     const elements = window.qwPage.findAll(selector);
-    console.log(elements);
     if (elements.length > 0) {
       for (const elem of elements ?? []) {
         this.rules[rule].execute(elem);
@@ -214,14 +210,6 @@ class ACTRules {
 
       this.report.assertions['QW-ACT-R40'] = this.rules['QW-ACT-R40'].getFinalResults();
       this.report.metadata[this.report.assertions['QW-ACT-R40'].metadata.outcome]++;
-    }
-  }
-
-  public validateFirstFocusableElementIsLinkToNonRepeatedContent(): void {
-    if (this.rulesToExecute['QW-ACT-R72']) {
-      this.rules['QW-ACT-R72'].execute(undefined);
-      this.report.assertions['QW-ACT-R72'] = this.rules['QW-ACT-R72'].getFinalResults();
-      this.report.metadata[this.report.assertions['QW-ACT-R72'].metadata.outcome]++;
     }
   }
 

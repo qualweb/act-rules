@@ -19,7 +19,6 @@ const mapping = {
   'QW-ACT-R5': 'bf051a',
   'QW-ACT-R6': '59796f',
   'QW-ACT-R7': 'b33eff',
-  'QW-ACT-R8': '9eb3f6',
   'QW-ACT-R9': 'b20e66',
   'QW-ACT-R10': '4b1c6c',
   'QW-ACT-R11': '97a4e1',
@@ -40,7 +39,6 @@ const mapping = {
   'QW-ACT-R26': 'eac66b',
   'QW-ACT-R27': '5f99a7',
   'QW-ACT-R28': '4e8ab6',
-  'QW-ACT-R29': 'e7aa44',
   'QW-ACT-R30': '2ee8b8',
   'QW-ACT-R31': 'c3232f',
   'QW-ACT-R32': '1ec09b',
@@ -67,13 +65,9 @@ const mapping = {
   'QW-ACT-R55': '1ea59c',
   'QW-ACT-R56': 'ab4d13',
   'QW-ACT-R57': 'f196ce',
-  'QW-ACT-R58': '2eb176',
-  'QW-ACT-R59': 'afb423',
   'QW-ACT-R60': 'f51b46',
   'QW-ACT-R61': '1a02b0',
   'QW-ACT-R62': 'oj04fd',
-  'QW-ACT-R63': 'b40fd1',
-  'QW-ACT-R64': '047fe0',
   'QW-ACT-R65': '307n5z',
   'QW-ACT-R66': 'm6b1q3',
   'QW-ACT-R67': '24afc2',
@@ -81,10 +75,6 @@ const mapping = {
   'QW-ACT-R69': '9e45ec',
   'QW-ACT-R70': 'akn7bn',
   'QW-ACT-R71': 'bisz58',
-  'QW-ACT-R72': '8a213c',
-  'QW-ACT-R73': '3e12e1',
-  'QW-ACT-R74': 'ye5d6e',
-  'QW-ACT-R75': 'cf77f2',
   'QW-ACT-R76': '09o5cg'
 };
 
@@ -98,6 +88,7 @@ describe(`Rule ${rule}`, function () {
   let tests = null;
 
   it('Starting test bench', async function () {
+    this.timeout(0);
     browser = await puppeteer.launch({ headless: true });
     incognito = await browser.createIncognitoBrowserContext();
     data = await getTestCases();
@@ -147,12 +138,7 @@ describe(`Rule ${rule}`, function () {
               { rules: [rule] }
             );
 
-            if (ruleId === '8a213c') {
-              await page.keyboard.press('Tab'); // for R72 that needs to check the first focusable element
-            }
             await page.evaluate((sourceHtml) => {
-              window.act.validateFirstFocusableElementIsLinkToNonRepeatedContent();
-
               const parser = new DOMParser();
               const sourceDoc = parser.parseFromString('', 'text/html');
 
@@ -180,7 +166,7 @@ describe(`Rule ${rule}`, function () {
               window.act.validateZoomedTextNodeNotClippedWithCSSOverflow();
               return window.act.getReport();
             });
-            //console.log(JSON.stringify(report.assertions[rule], null, 2))
+            //console.log(JSON.stringify(report, null, 2));
             expect(report.assertions[rule].metadata.outcome).to.be.equal(test.outcome);
           } finally {
             await page.close();

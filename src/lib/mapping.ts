@@ -1,7 +1,7 @@
 export default {
   title: ['QW-ACT-R1'],
   'body, body *': ['QW-ACT-R43'],
-  html: ['QW-ACT-R2', 'QW-ACT-R3', 'QW-ACT-R5', 'QW-ACT-R63', 'QW-ACT-R64', 'QW-ACT-R73', 'QW-ACT-R74'],
+  html: ['QW-ACT-R2', 'QW-ACT-R3', 'QW-ACT-R5'],
   'input[type="image"]': ['QW-ACT-R6'],
   'button, input[type="submit"], input[type="reset"], input[type="button"], [role="button"]': ['QW-ACT-R11'],
   'a[href], area[href], [role="link"]': ['QW-ACT-R12'],
@@ -17,7 +17,6 @@ export default {
   '[role]': ['QW-ACT-R20', 'QW-ACT-R33'],
   'img, [role="img"]': ['QW-ACT-R17'],
   iframe: ['QW-ACT-R19'],
-  audio: ['QW-ACT-R58', 'QW-ACT-R59'],
   '[aria-label], [aria-labelledby]': ['QW-ACT-R30'],
   video: [
     'QW-ACT-R51',

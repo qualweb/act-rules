@@ -4,11 +4,11 @@ import AtomicRule from '../lib/AtomicRule.object';
 import {
   ACTRuleDecorator,
   ElementExists,
-  ElementHasText,
   ElementIsHTMLElement,
   ElementIsNot,
   ElementIsVisible,
-  ElementIsNotWidget
+  ElementIsNotWidget,
+  ElementHasOwnText
 } from '../lib/decorator';
 import Test from '../lib/Test.object';
 
@@ -23,13 +23,13 @@ class QW_ACT_R76 extends AtomicRule {
   @ElementIsNot(['html', 'head', 'body', 'script', 'style', 'meta'])
   @ElementIsVisible
   @ElementIsNotWidget
-  @ElementHasText
+  @ElementHasOwnText
   execute(element: typeof window.qwElement): void {
     const disabledWidgets = window.disabledWidgets;
 
     const test = new Test();
 
-    const visible = element.isVisible();
+    /*const visible = element.isVisible();
 
     if (!visible) {
       return;
@@ -50,7 +50,9 @@ class QW_ACT_R76 extends AtomicRule {
     const isWidget = element.isWidget();
     if (isWidget) {
       return;
-    }
+    }*/
+
+    const elementText = element.getOwnText();
 
     const elementSelectors = element.getSelector();
 

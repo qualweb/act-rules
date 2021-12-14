@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.0-alpha] -
+
+### Removed
+
+- QW-ACT-R72
+- QW-ACT-R75 and respective atomic rules (QW-ACT-R63, QW-ACT-R64, QW-ACT-R73, QW-ACT-R74)
+- QW-ACT-R29 and respective atomic rules (QW-ACT-R58, QW-ACT-R59)
+
 ## [0.6.2] - 28/07/2021
 
 ### Updated

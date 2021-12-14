@@ -680,30 +680,6 @@
       "a11yReq": ["WCAG21:language"]
     }
   },
-  "QW_ACT_R29": {
-    "name": "Audio element content has text alternative",
-    "code": "QW-ACT-R29",
-    "mapping": "e7aa44",
-    "description": "This rule checks if audio only elements have a text alternative available.",
-    "metadata": {
-      "target": {
-        "element": "*",
-        "attributes": "role"
-      },
-      "success-criteria": [
-        {
-          "name": "1.2.1",
-          "level": "A",
-          "principle": "Perceivable ",
-          "url": "https://www.w3.org/WAI/WCAG21/Understanding/audio-only-and-video-only-prerecorded"
-        }
-      ],
-      "related": [],
-      "url": "https://act-rules.github.io/rules/e7aa44",
-      "type": ["ACTRule", "TestCase"],
-      "a11yReq": []
-    }
-  },
   "QW_ACT_R30": {
     "name": "Visible label is part of accessible name",
     "code": "QW-ACT-R30",
@@ -1211,38 +1187,6 @@
       "a11yReq": ["WCAG21:language"]
     }
   },
-  "QW_ACT_R58": {
-    "name": "audio element content has transcript",
-    "code": "QW-ACT-R58",
-    "mapping": "2eb176",
-    "description": "Non-streaming audio elements must have a text alternative for all included auditory information.",
-    "metadata": {
-      "target": {
-        "element": "audio"
-      },
-      "success-criteria": [],
-      "related": [],
-      "url": "https://act-rules.github.io/rules/2eb176",
-      "type": ["ACTRule", "TestCase"],
-      "a11yReq": ["WCAG21:language"]
-    }
-  },
-  "QW_ACT_R59": {
-    "name": "audio element content is media alternative for text",
-    "code": "QW-ACT-R59",
-    "mapping": "afb423",
-    "description": "This rule checks audio is a media alternative for text on the page.",
-    "metadata": {
-      "target": {
-        "element": "audio"
-      },
-      "success-criteria": [],
-      "related": [],
-      "url": "https://act-rules.github.io/rules/afb423",
-      "type": ["ACTRule", "TestCase"],
-      "a11yReq": ["WCAG21:language"]
-    }
-  },
   "QW_ACT_R60": {
     "name": "video element auditory content has captions",
     "code": "QW-ACT-R60",
@@ -1299,34 +1243,6 @@
       ],
       "related": [],
       "url": "https://act-rules.github.io/rules/oj04fd"
-    }
-  },
-  "QW_ACT_R63": {
-    "name": "Document has a landmark with non-repeated content",
-    "code": "QW-ACT-R63",
-    "mapping": "b40fd1",
-    "description": "This rule checks that each page has an element with a landmark semantic role starting with non-repeated content",
-    "metadata": {
-      "target": {
-        "element": "html"
-      },
-      "success-criteria": [],
-      "related": [],
-      "url": "https://act-rules.github.io/rules/b40fd1"
-    }
-  },
-  "QW_ACT_R64": {
-    "name": "Document has heading for non-repeated content",
-    "code": "QW-ACT-R64",
-    "mapping": "047fe0",
-    "description": "This rule checks that the non-repeated content contains a heading",
-    "metadata": {
-      "target": {
-        "element": "html"
-      },
-      "success-criteria": [],
-      "related": ["H69"],
-      "url": "https://act-rules.github.io/rules/047fe0"
     }
   },
   "QW_ACT_R65": {
@@ -1486,75 +1402,6 @@
       ],
       "related": [],
       "url": "https://act-rules.github.io/rules/bisz58"
-    }
-  },
-  "QW_ACT_R72": {
-    "name": "First focusable element is link to non-repeated content",
-    "code": "QW-ACT-R72",
-    "mapping": "8a213c",
-    "description": "This rule checks that the first focusable element is a link to non-repeated content in the page",
-    "metadata": {
-      "target": {
-        "element": "*"
-      },
-      "success-criteria": [],
-      "related": [],
-      "url": "https://act-rules.github.io/rules/8a213c"
-    }
-  },
-  "QW_ACT_R73": {
-    "name": "Block of repeated content is collapsible",
-    "code": "QW-ACT-R73",
-    "mapping": "3e12e1",
-    "description": "This rule checks that repeated blocks of content are collapsible.",
-    "metadata": {
-      "target": {
-        "element": "html"
-      },
-      "success-criteria": [],
-      "related": ["SCR28"],
-      "url": "https://act-rules.github.io/rules/3e12e1",
-      "type": ["ACTRule", "TestCase"],
-      "a11yReq": []
-    }
-  },
-  "QW_ACT_R74": {
-    "name": "Document has an instrument to move focus to non-repeated content",
-    "code": "QW-ACT-R74",
-    "mapping": "ye5d6e",
-    "description": "This rule checks that there is an instrument to move focus to non-repeated content in the page.",
-    "metadata": {
-      "target": {
-        "element": "html"
-      },
-      "success-criteria": [],
-      "related": ["G1", "G123", "G124"],
-      "url": "https://act-rules.github.io/rules/ye5d6e",
-      "type": ["ACTRule", "TestCase"],
-      "a11yReq": []
-    }
-  },
-  "QW_ACT_R75": {
-    "name": "Bypass Blocks of Repeated Content",
-    "code": "QW-ACT-R75",
-    "mapping": "cf77f2",
-    "description": "This rule checks that each page has a mechanism to bypass repeated blocks of content.",
-    "metadata": {
-      "target": {
-        "element": "html"
-      },
-      "success-criteria": [
-        {
-          "name": "2.4.1",
-          "level": "A",
-          "principle": "Operable",
-          "url": "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html"
-        }
-      ],
-      "related": [],
-      "url": "https://act-rules.github.io/rules/cf77f2",
-      "type": ["ACTRule", "TestCase"],
-      "a11yReq": []
     }
   },
   "QW_ACT_R76": {
