@@ -32,10 +32,14 @@ class QW_ACT_R14 extends AtomicRule {
       }
     }
 
-    if ((!maximumScale || parseInt(maximumScale) < 0) && !userScalable) {
+    /*if ((!maximumScale || parseInt(maximumScale) < 0) && !userScalable) {
       test.verdict = 'passed';
       test.resultCode = 'P1';
-    } else if (userScalable === 'no' || maximumScale == 'yes' || parseFloat(maximumScale) < 2) {
+    } else */ if (
+      userScalable === 'no' ||
+      maximumScale === 'yes' ||
+      (parseFloat(maximumScale) >= 0 && parseFloat(maximumScale) < 2)
+    ) {
       test.verdict = 'failed';
       test.resultCode = 'F1';
     } else {

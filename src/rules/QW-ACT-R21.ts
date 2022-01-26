@@ -23,7 +23,7 @@ class QW_ACT_R21 extends AtomicRule {
 
       const role = elem.getAttribute('role');
       if (role && this.roleList.includes(role)) {
-        const accessibleName = elem.getAccessibleNameSVG();
+        const accessibleName = elem.getAccessibleName();
         if (accessibleName && accessibleName.trim() !== '') {
           test.verdict = 'passed';
           test.resultCode = 'P1';

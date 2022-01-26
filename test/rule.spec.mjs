@@ -89,7 +89,7 @@ describe(`Rule ${rule}`, function () {
 
   it('Starting test bench', async function () {
     this.timeout(0);
-    browser = await puppeteer.launch({ headless: true });
+    browser = await puppeteer.launch({ headless: false });
     incognito = await browser.createIncognitoBrowserContext();
     data = await getTestCases();
     tests = data.testcases
@@ -169,7 +169,7 @@ describe(`Rule ${rule}`, function () {
             //console.log(JSON.stringify(report, null, 2));
             expect(report.assertions[rule].metadata.outcome).to.be.equal(test.outcome);
           } finally {
-            await page.close();
+            //await page.close();
           }
         });
       });
@@ -178,10 +178,10 @@ describe(`Rule ${rule}`, function () {
     describe(`Closing test bench`, async function () {
       it(`Closed`, async function () {
         if (incognito) {
-          await incognito.close();
+          //await incognito.close();
         }
         if (browser) {
-          await browser.close();
+          //await browser.close();
         }
       });
     });

@@ -3,7 +3,7 @@ export default {
   'QW-ACT-R23': {
     selector: 'video',
     implementation: 'conjunction',
-    rules: ['QW-ACT-R55', 'QW-ACT-R61', 'QW-ACT-R57', 'QW-ACT-R56']
+    rules: ['QW-ACT-R55', 'QW-ACT-R56', 'QW-ACT-R61', 'QW-ACT-R57']
   },
   'QW-ACT-R26': { selector: 'video', implementation: 'conjunction', rules: ['QW-ACT-R56', 'QW-ACT-R60'] },
   'QW-ACT-R31': {

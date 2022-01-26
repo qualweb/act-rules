@@ -58,7 +58,7 @@ class QW_ACT_R10 extends AtomicRule {
             test.resultCode = 'P1';
           } else {
             test.verdict = 'warning';
-            test.resultCode = 'F1';
+            test.resultCode = 'W1';
           }
 
           test.addElements(elements);

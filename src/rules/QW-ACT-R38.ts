@@ -23,7 +23,6 @@ class QW_ACT_R38 extends AtomicRule {
 
     if (explicitRole !== null && explicitRole !== implicitRole && explicitRole !== 'combobox' && !ariaBusy) {
       const result = this.checkOwnedElementsRole(
-        //@ts-ignore
         rolesJSON[explicitRole]['requiredOwnedElements'],
         element.getOwnedElements()
       );

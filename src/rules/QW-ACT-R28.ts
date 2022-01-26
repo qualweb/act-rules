@@ -24,10 +24,8 @@ class QW_ACT_R28 extends AtomicRule {
       const isInAT = elem.isInTheAccessibilityTree();
 
       if (isInAT && implicitRole !== elemRole && elemRole !== null && Object.keys(rolesJSON).includes(elemRole)) {
-        //@ts-ignore
         if (rolesJSON[elemRole]['requiredAria']) {
           const implicitRoles = new Array<string>();
-          //@ts-ignore
           const implicitValueRoles = rolesJSON[elemRole]['implicitValueRoles'];
           for (const role of implicitValueRoles || []) {
             if (role[0] !== '') {
@@ -35,7 +33,7 @@ class QW_ACT_R28 extends AtomicRule {
             }
           }
           let i = 0;
-          //@ts-ignore
+
           const requiredAriaList = <string[]>rolesJSON[elemRole]['requiredAria'];
           let result = true; // passed until it fails a requirement
           let requiredAria;

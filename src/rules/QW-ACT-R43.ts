@@ -61,7 +61,9 @@ class QW_ACT_R43 extends AtomicRule {
           differenceWidth > parseInt(paddingLeft) ||
           differenceWidth > parseInt(paddingRight) ||
           differenceHeight > parseInt(paddingTop) ||
-          differenceHeight > parseInt(paddingBottom);
+          differenceHeight > parseInt(paddingBottom); /* ||
+          scrollWidth < parseInt(paddingLeft) + parseInt(paddingRight) ||
+          scrollHeight < parseInt(paddingTop) + parseInt(paddingBottom);*/
       }
     }
 
