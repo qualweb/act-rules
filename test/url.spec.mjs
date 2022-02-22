@@ -14,7 +14,7 @@ describe('Running tests', function () {
     const response = await fetch(url);
     const sourceCode = await response.text();
 
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
     const incognito = await browser.createIncognitoBrowserContext();
     const page = await incognito.newPage();
 
@@ -22,15 +22,21 @@ describe('Running tests', function () {
     await dom.process({ execute: { act: true }, waitUntil: ['load'] }, url, '');
 
     await page.addScriptTag({
-      path: require.resolve('@qualweb/qw-page')
+      path: require.resolve('@qualweb/qw-page'),
+      type: 'text/javascript',
+      id: 'qw-script-page'
     });
 
     await page.addScriptTag({
-      path: require.resolve('@qualweb/util')
+      path: require.resolve('@qualweb/util'),
+      type: 'text/javascript',
+      id: 'qw-script-util'
     });
 
     await page.addScriptTag({
-      path: require.resolve('../dist/act.bundle.js')
+      path: require.resolve('../dist/act.bundle.js'),
+      type: 'text/javascript',
+      id: 'qw-script-act'
     });
 
     await page.keyboard.press('Tab'); // for R72 that needs to check the first focusable element
@@ -38,7 +44,6 @@ describe('Running tests', function () {
       (enLocale, sourceCode) => {
         window.act = new ACTRules({ translate: enLocale, fallback: enLocale });
         window.act.configure({ rules: ['QW-ACT-R1'] });
-        window.act.validateFirstFocusableElementIsLinkToNonRepeatedContent();
 
         const parser = new DOMParser();
         const sourceDoc = parser.parseFromString('', 'text/html');

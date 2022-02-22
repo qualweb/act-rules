@@ -1,6 +1,12 @@
 # Changelog
 
-## [0.7.0-alpha] -
+## [0.7.0-alpha2] - 22/02/2022
+
+### Updated
+
+- dependencies
+
+## [0.7.0-alpha] - ???
 
 ### Removed
 
