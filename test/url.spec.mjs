@@ -14,7 +14,7 @@ describe('Running tests', function () {
     const response = await fetch(url);
     const sourceCode = await response.text();
 
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: process.env.PUPPETEER_HEADLESS || true });
     const incognito = await browser.createIncognitoBrowserContext();
     const page = await incognito.newPage();
 
