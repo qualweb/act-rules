@@ -3,10 +3,10 @@ import puppeteer from 'puppeteer';
 import { Dom } from '@qualweb/dom';
 import { expect } from 'chai';
 import locales from '@qualweb/locale';
-import { createRequire } from 'module';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath, URL } from 'node:url';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
 async function getTestCases() {
