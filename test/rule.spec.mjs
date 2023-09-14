@@ -1,5 +1,4 @@
 import fetch from 'node-fetch';
-import puppeteer from 'puppeteer';
 import { Dom } from '@qualweb/dom';
 import { expect } from 'chai';
 import locales from '@qualweb/locale';
@@ -7,6 +6,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath, URL } from 'node:url';
 import { createRequire } from 'module';
+import { launchBrowser } from './util.mjs';
 const require = createRequire(import.meta.url);
 
 async function getTestCases() {
@@ -112,9 +112,7 @@ describe('ACT rules', () => {
       // not be necessary.
       before(async () => {
         // console.info('Launching Puppeteer');
-        browser = await puppeteer.launch({
-          headless: process.env.TEST_PUPPETEER_HEADLESS == false || true,
-        });
+        browser = await launchBrowser();
   
         incognito = await browser.createIncognitoBrowserContext();
       });

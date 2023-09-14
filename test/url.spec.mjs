@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import fetch from 'node-fetch';
-import puppeteer from 'puppeteer';
+import { launchBrowser } from './util.mjs';
 import { Dom } from '@qualweb/dom';
 import locales from '@qualweb/locale';
 import { createRequire } from 'module';
@@ -10,9 +10,7 @@ describe('URL evaluation', function () {
   let browser = null;
 
   before(async () => {
-    browser = await puppeteer.launch({
-      headless: process.env.TEST_PUPPETEER_HEADLESS?.toLowerCase() === 'false' || true,
-    });
+    browser = await launchBrowser();
   });
 
   it('Evaluates url', async function () {
