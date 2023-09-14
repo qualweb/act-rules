@@ -6,7 +6,15 @@ import locales from '@qualweb/locale';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
-describe('Running tests', function () {
+describe('URL evaluation', function () {
+  let browser = null;
+
+  before(async () => {
+    browser = await puppeteer.launch({
+      headless: process.env.TEST_PUPPETEER_HEADLESS?.toLowerCase() === 'false' || true,
+    });
+  });
+
   it('Evaluates url', async function () {
     this.timeout(0);
 
@@ -14,7 +22,7 @@ describe('Running tests', function () {
     const response = await fetch(url);
     const sourceCode = await response.text();
 
-    const browser = await puppeteer.launch({ headless: false });
+    
     const incognito = await browser.createIncognitoBrowserContext();
     const page = await incognito.newPage();
 
@@ -55,8 +63,8 @@ describe('Running tests', function () {
         window.act.executeAtomicRules();
         window.act.executeCompositeRules();
       },
-      locales.default.en,
-      locales.default.en,
+      locales.en,
+      locales.en,
       sourceCode
     );
 
@@ -77,4 +85,8 @@ describe('Running tests', function () {
     console.log(JSON.stringify(report, null, 2));
     expect(report);
   });
+
+  after(async () => {
+    await browser.close();
+  })
 });
