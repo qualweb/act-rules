@@ -5,7 +5,7 @@ name: Unit Tests
 
 on:
   pull_request:
-    branches: [ "development", "tmp/changesets-sandbox" ]
+    branches: [ "development", "master" ]
 
 jobs:
   build:
