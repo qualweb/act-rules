@@ -20,7 +20,6 @@ describe('URL evaluation', function () {
     const response = await fetch(url);
     const sourceCode = await response.text();
 
-    
     const incognito = await browser.createIncognitoBrowserContext();
     const page = await incognito.newPage();
 
