@@ -1,0 +1,19 @@
+{
+  "configName": "Unit tests",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@src/*": [ "./src/*" ],
+      "@src": [ "./src" ],
+      "@test/*": [ "./test/*" ],
+      "@test": [ "./test" ],
+    },
+    "types": [
+      "mocha",
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts",
+  ],
+}

@@ -1,9 +1,12 @@
 import fetch from 'node-fetch';
-import puppeteer from 'puppeteer';
 import { Dom } from '@qualweb/dom';
 import { expect } from 'chai';
 import locales from '@qualweb/locale';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { fileURLToPath, URL } from 'node:url';
 import { createRequire } from 'module';
+import { launchBrowser } from './util.mjs';
 const require = createRequire(import.meta.url);
 
 async function getTestCases() {
@@ -88,30 +91,46 @@ const mapping = {
   'QW-ACT-R76': '09o5cg'
 };
 
-const rule = process.argv[3].toUpperCase();
-const ruleId = mapping[rule];
+// If a single QW-ACT-R?? was passed as an argument, run just that test.
+// Otherwise, run all tests.
+const rulesToTest = Object.keys(mapping);
 
-describe(`Rule ${rule}`, function () {
-  let browser = null;
-  let incognito = null;
-  let data = null;
-  let tests = null;
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
-  it('Starting test bench', async function () {
-    browser = await puppeteer.launch({ headless: false });
-    incognito = await browser.createIncognitoBrowserContext();
-    data = await getTestCases();
-    tests = data.testcases
+const actTestCases = JSON.parse(readFileSync(resolve(__dirname, 'fixtures/testcases.json')));
+
+describe('ACT rules', () => {
+  for (const ruleToTest of rulesToTest) {
+    const ruleId = mapping[ruleToTest];
+    describe(`Rule ${ruleToTest}`, function () {
+      let browser = null;
+      let incognito = null;
+      let tests = null;
+    
+      // Fire up Puppeteer before any test runs. All tests should be running in
+      // their own tab/page, so relaunching Puppeteer/Chrome between cases should
+      // not be necessary.
+      before(async () => {
+        // console.info('Launching Puppeteer');
+        browser = await launchBrowser();
+  
+        incognito = await browser.createIncognitoBrowserContext();
+      });
+  
+      tests = actTestCases.testcases
       .filter((t) => t.ruleId === ruleId)
       .map((t) => {
-        return { title: t.testcaseTitle, url: t.url, outcome: t.expected };
+        return {
+          title: t.testcaseTitle,
+          url: t.url,
+          outcome: t.expected,
+        };
       });
-
-    describe('Running tests', function () {
-      tests.forEach(function (test) {
+  
+      for (const test of tests) {
         it(test.title, async function () {
           this.timeout(0);
-
+  
           const page = await incognito.newPage();
           try {
             const dom = new Dom(page);
@@ -119,87 +138,86 @@ describe(`Rule ${rule}`, function () {
               {
                 execute: { act: true },
                 'act-rules': {
-                  rules: [rule]
+                  rules: [ruleToTest]
                 },
-                waitUntil: rule === 'QW-ACT-R4' || rule === 'QW-ACT-R71' ? ['load', 'networkidle0'] : 'load'
+                waitUntil: ruleToTest === 'QW-ACT-R4' || ruleToTest === 'QW-ACT-R71' ? ['load', 'networkidle0'] : 'load'
               },
               test.url,
               ''
             );
-
+  
             await page.addScriptTag({
               path: require.resolve('@qualweb/qw-page')
             });
-
+  
             await page.addScriptTag({
               path: require.resolve('@qualweb/util')
             });
-
+  
             await page.addScriptTag({
               path: require.resolve('../dist/act.bundle.js')
             });
-
+  
             await page.evaluate(
               (locale, options) => {
                 window.act = new ACTRules({ translate: locale, fallback: locale }, options);
               },
               locales.default.en,
-              { rules: [rule] }
+              { rules: [ruleToTest] }
             );
-
+  
             if (ruleId === '8a213c') {
               await page.keyboard.press('Tab'); // for R72 that needs to check the first focusable element
             }
             await page.evaluate((sourceHtmlHeadContent) => {
               window.act.validateFirstFocusableElementIsLinkToNonRepeatedContent();
-
+  
               const parser = new DOMParser();
               const sourceDoc = parser.parseFromString('', 'text/html');
-
+  
               sourceDoc.head.innerHTML = sourceHtmlHeadContent;
-
+  
               const elements = sourceDoc.querySelectorAll('meta');
               const metaElements = new Array();
               for (const element of elements) {
                 metaElements.push(window.qwPage.createQWElement(element));
               }
-
+  
               window.act.validateMetaElements(metaElements);
               window.act.executeAtomicRules();
               window.act.executeCompositeRules();
             }, sourceHtmlHeadContent);
-
+  
             if (ruleId === '59br37') {
               await page.setViewport({
                 width: 640,
                 height: 512
               });
             }
-
+  
             const report = await page.evaluate(() => {
               window.act.validateZoomedTextNodeNotClippedWithCSSOverflow();
               return window.act.getReport();
             });
             //console.log(JSON.stringify(report.assertions[rule], null, 2))
-            expect(report.assertions[rule].metadata.outcome).to.be.equal(test.outcome);
-            if (report.assertions[rule].metadata.outcome === test.outcome)
-              await page.close();
+            expect(report.assertions[ruleToTest].metadata.outcome).to.be.equal(test.outcome);
           } finally {
-            
+            // Moved from inside the try-section. Pages should *always* close after the test.
+            // if (report.assertions[rule].metadata.outcome === test.outcome)
+              await page.close();
           }
         });
+      }
+  
+      after(async () => {
+        // console.info('Closing test bench');
+        if (incognito) {
+          await incognito.close();
+        }
+        if (browser) {
+          await browser.close();
+        }
       });
-    });
-
-    describe(`Closing test bench`, async function () {
-      it(`Closed`, async function () {
-        /* if (incognito) {
-           await incognito.close();
-         }
-         if (browser) {
-           await browser.close();
-         }*/
-      });
-    });
-  });
+    });  
+  }
 });
