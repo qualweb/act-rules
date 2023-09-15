@@ -5,10 +5,16 @@ name: Unit Tests
 
 on:
   pull_request:
-    branches: [ "development", "master" ]
+    types:
+      - opened
+      - edited
+      - reopened
+    branches: # Only run against main branches.
+      - development
+      - master
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
