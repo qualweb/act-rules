@@ -4,11 +4,10 @@
 name: Unit Tests
 
 on:
+  push:
+    branches:
+      - development
   pull_request:
-    types:
-      - opened
-      - edited
-      - reopened
     branches: # Only run against main branches.
       - development
       - master
