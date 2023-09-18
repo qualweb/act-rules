@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.14
+
+### Patch Changes
+
+- bb41dbd: Puppeteer in unit tests should be headless.
+
+  This changes the launch arguments for puppeteer so that it is headless unless the env var `PUPPETEER_HEADLESS` is set otherwise.
+
 ## [0.6.13] - 30/05/2023
 
 ### Updated
@@ -17,7 +25,6 @@
 ### Updated
 
 - r38, r5, r12, r13, r24 and r68
-
 
 ## [0.6.10] - 17/01/2022
 
