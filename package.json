@@ -18,7 +18,8 @@
     "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "prebuild": "npm run validate:rules && npm run compile:rules && rimraf prebuild && tsc --build",
     "build": "npm run prebuild && rimraf dist && webpack --mode production && rimraf prebuild",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "release": "npm run prepare && npx changeset publish"
   },
   "keywords": [
     "a11y",
