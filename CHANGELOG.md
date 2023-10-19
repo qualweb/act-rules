@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.18
+
+### Patch Changes
+
+- add7fe2: Updated R37 and R76 to pass ACT Unit Tests
+
 ## 0.6.16
 
 ### Patch Changes
