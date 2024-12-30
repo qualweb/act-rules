@@ -1,3 +1,5 @@
+This repository has been archived. QualWeb is now being maintained in a monorepo at https://github.com/qualweb/qualweb
+
 # QualWeb ACT Rules Module
 
 Implementation of the [ACT rules](https://act-rules.github.io/rules/).
